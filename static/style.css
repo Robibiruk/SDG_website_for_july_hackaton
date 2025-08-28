@@ -1,8 +1,3 @@
-/*
- * Duplicated and redundant styles have been consolidated.
- * Redundant 'font-family' and 'text-shadow' properties were moved to parent elements.
- * Unnecessary duplicate 'main' and 'input/button' declarations were removed.
- */
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -77,7 +72,7 @@ nav {
     border-bottom: 1px solid #ccc;
     padding: 4px;
     cursor: pointer;
-    color: #333; /* Ensuring links have a color */
+    color: #333;
 }
 
 .dropdown a:last-of-type {
@@ -102,15 +97,15 @@ nav {
 }
 
 main {
-    max-width: 800px; /* Consolidated from two main declarations */
-    margin: 30px auto; /* Combined margin from two declarations */
+    max-width: 800px;
+    margin: 30px auto;
     padding: 20px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex; /* Moved from second main declaration */
-    flex-direction: column; /* Moved from second main declaration */
-    gap: 40px; /* Moved from second main declaration */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
 #landing-section {
@@ -146,8 +141,8 @@ main {
     width: 100%;
     max-width: 1100px;
     text-align: center;
-    color: #fff; /* Consolidated the white text color */
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7); /* Consolidated the text shadow */
+    color: #fff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 #main-text-wrapper h1 {
@@ -194,7 +189,7 @@ form {
 /* Consolidated input and button styles */
 input,
 button,
-textarea { /* Added textarea to this group */
+textarea {
     padding: 14px;
     font-size: 16px;
     border-radius: 8px;
@@ -203,7 +198,7 @@ textarea { /* Added textarea to this group */
 }
 
 input:focus,
-textarea:focus { /* Also applied to textarea */
+textarea:focus {
     border-color: #2c786c;
     outline: none;
     box-shadow: 0 0 8px rgba(44, 120, 108, 0.3);
@@ -309,7 +304,7 @@ button:hover {
     color: #2c786c;
 }
 
-/* STORE SECTION STYLES START */
+/* Store Section Styles (Updated for new products) */
 #store-section {
     width: 100%;
     background-color: #f7eee2;
@@ -318,19 +313,19 @@ button:hover {
     text-align: center;
 }
 
-#fresh-food-heading {
+#store-section > h3 {
+    font-size: 44px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+#store-heading {
     color: #91ac41;
     font-size: 24px;
     font-family: 'Caveat', cursive;
     margin: 0;
     margin-top: 35px;
-}
-
-#store-section>h3 {
-    font-size: 44px;
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 8px;
 }
 
 #store-desc {
@@ -342,50 +337,99 @@ button:hover {
     margin-bottom: 55px;
 }
 
-#store-items-wrapper {
-    width: 100%;
-    max-width: 1140px;
+.product-grid {
     display: flex;
-    justify-content: stretch;
+    justify-content: center; /* Center the new product cards */
+    max-width: 1140px;
     margin: 0 auto;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    gap: 20px;
 }
 
-.store-item {
-    width: 25%;
+.product-card {
+    width: 30%; /* Adjust width for three items per row */
+    min-width: 250px; /* Ensure cards don't get too small */
+}
+
+/* Subscription Section Styles */
+#subscription-section {
+    background-color: #2c786c;
+    color: #fff;
     text-align: center;
-    padding: 24px;
+    padding: 60px 20px;
+    font-family: 'Poppins', sans-serif;
 }
 
-.icon-wrapper {
+#subscription-section h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.sub-description {
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+}
+
+.price-box {
     display: inline-block;
-    background-color: #e3b375;
-    border-radius: 50%;
-    padding: 40px;
-    color: white;
-    transition: all 0.3s;
+    margin-bottom: 10px;
 }
 
-.store-item:hover .icon-wrapper {
-    transform: scale(1.1, 1.1);
+.price {
+    font-size: 48px;
+    font-weight: 800;
+    vertical-align: middle;
 }
 
-.icon-wrapper i {
-    font-size: 60px;
-}
-
-.store-item h3 {
-    font-size: 24px;
+.per-month {
+    font-size: 18px;
     font-weight: 600;
+    vertical-align: sub;
 }
 
-.store-item p {
+.trial-text {
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.subscribe-btn {
+    background-color: transparent;
+    color: #f69dad;
+    padding: 12px 40px;
     font-size: 16px;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-    color: #8b8b99;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 50px;
+    border: black 2px;
+    transition: all 0.3s ease;
 }
 
-/* FOLLOW US SECTION STYLES START */
+.subscribe-btn:hover {
+    background-color: #f69dad;
+    transform: translateY(-3px);
+}
+
+/* Service We Provide section, was previously labeled 'store-section' */
+#service-section {
+    width: 100%;
+    background-color: #f7eee2;
+    padding-top: 75px;
+    padding-bottom: 75px;
+    text-align: center;
+}
+#service-section > h3 {
+    font-size: 44px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+/* Follow Us Section */
 #follow-section {
     display: flex;
     justify-content: stretch;
@@ -490,6 +534,84 @@ button:hover {
     margin: 0;
 }
 
+#testimonials-section {
+    width: 100%;
+    padding-top: 75px;
+    padding-bottom: 75px;
+    text-align: center;
+}
+
+#testimonials-section > h3 {
+    font-size: 44px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+#testimonials-desc {
+    max-width: 700px;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 auto;
+    color: #8b8b99;
+    letter-spacing: 0.5px;
+    margin-bottom: 55px;
+}
+
+#testimonials-wrapper {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.testimonial-item {
+    width: 25%;
+    text-align: center;
+    background-color: #f5f6fb;
+    padding: 40px 30px;
+    margin: 16px;
+    border-top-left-radius: 45px;
+    border-bottom-left-radius: 45px;
+    border-bottom-right-radius: 45px;
+    transition: box-shadow 0.3s;
+}
+
+.testimonial-item:hover {
+    box-shadow: 0 12px 16px 0 rgba(39,39,47,0.06);
+}
+
+.testimonial-item img {
+    width: 80px;
+    margin-bottom: 25px;
+    border-radius: 50%;
+}
+
+.testimonial-message {
+    font-size: 14px;
+    color: #8b8b99;
+    letter-spacing: 0.5px;
+    font-style: italic;
+    margin: 0;
+}
+
+.testimonial-item h3 {
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 0px;
+}
+
+.job-role {
+    color: #8b8b99;
+    font-size: 12px;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
 /* VIDEO SECTION STYLES START */
 #video-section h3 {
     color: #8b8b99;
@@ -544,7 +666,7 @@ button:hover {
 }
 
 .section-heading {
-    font-size: 44px; /* Consolidated font-weight to this declaration */
+    font-size: 44px;
     font-weight: 600;
     margin: 0;
 }
@@ -626,21 +748,40 @@ footer {
  */
 @media (max-width: 768px) {
     /* General adjustments for mobile */
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        position: relative;
+        justify-content: center;
+        text-align: center;
+    }
+
     .menu-item {
-        display: none;
+        margin: 10px 0;
+    }
+
+    .dropdown {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        padding: 10px;
     }
 
     .primary-button {
-        margin-right: 0
+        margin-right: 0;
+        margin-top: 10px;
     }
 
-    #main-text-wrapper > h1 {
+    #main-text-wrapper h1 {
         font-size: 28px;
+        letter-spacing: 4px;
+        padding: 0 10px;
     }
 
-    #main-text-wrapper > p {
-        padding: 16px;
-        box-sizing: border-box;
+    #main-text-wrapper p {
+        font-size: 12px;
+        padding: 0 10px;
     }
 
     #store-items-wrapper,
@@ -654,11 +795,12 @@ footer {
     .stats-item,
     #left-section,
     #right-section,
-    #address-wrapper > div {
+    #address-wrapper > div,
+    .product-card {
         width: 100%;
         padding: 0;
     }
-    
+
     #address-wrapper > div:last-of-type {
         width: 100%;
     }
