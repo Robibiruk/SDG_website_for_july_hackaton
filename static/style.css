@@ -747,15 +747,58 @@ footer {
  * Adjusts layout for screens up to 768px wide (standard for most phones and tablets in portrait mode).
  */
 @media (max-width: 768px) {
-    /* General adjustments for mobile */
+    /* Global Mobile Resets */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Primary Content Wrapper */
+    main {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 10px; /* Adjust padding to give a little space on the sides */
+        box-sizing: border-box;
+    }
+    
+    /* Center all major sections on mobile */
+    #reminder-form,
+    #reminder-list,
+    #gamification,
+    #store-section,
+    #subscription-section,
+    #service-section,
+    #testimonials-section,
+    #follow-section,
+    #stats-section,
+    #video-section,
+    #address-section {
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 0; /* Resetting padding to ensure full width */
+        box-sizing: border-box;
+    }
+
+    /* Navigation Bar */
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        position: relative;
+    }
+    
     .menu-item {
         display: none;
     }
 
     .primary-button {
-        margin-right: 0
+        margin-right: 0;
+        margin-top: 10px;
     }
 
+    /* Landing Section */
     #main-text-wrapper h1 {
         font-size: 28px;
         letter-spacing: 4px;
@@ -766,36 +809,17 @@ footer {
         font-size: 12px;
         padding: 0 10px;
     }
-
+    
+    /* Flexbox Containers */
     #store-items-wrapper,
     #stats-wrapper,
-    #follow-section {
+    #address-wrapper,
+    #testimonials-wrapper {
         flex-direction: column;
         gap: 20px;
     }
 
-    #testimonials-section {
-        padding: 16px;
-        box-sizing: border-box;
-    }
-
-    #testimonials-section > h3 {
-        font-size: 28px;
-    }
-
-    #testimonials-wrapper {
-        flex-direction: column;
-    }
-
-    .testimonial-item {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .testimonial-by {
-        font-size: 18px; /* Corrected 'important' typo */
-    }
-
+    /* Individual Items */
     .store-item,
     .stats-item,
     #left-section,
@@ -820,18 +844,19 @@ footer {
         gap: 30px;
     }
 
+    /* Video Section */
     #video-section iframe {
         height: 250px;
     }
 
+    /* Headers */
     #store-section > h3,
     .section-heading,
     .stats-item h3 {
         font-size: 32px;
     }
-
-    /* New styles for the Subscription and Store sections */
     
+    /* Store and Subscription Sections */
     #store-section {
         padding: 50px 20px;
     }
@@ -842,7 +867,7 @@ footer {
     
     .product-card {
         width: 100%;
-        min-width: unset; /* Remove the minimum width constraint */
+        min-width: unset;
     }
 
     #subscription-section {
