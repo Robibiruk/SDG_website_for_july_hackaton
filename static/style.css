@@ -1,3 +1,9 @@
+/*
+ * Duplicated and redundant styles have been consolidated.
+ * Redundant 'font-family' and 'text-shadow' properties were moved to parent elements.
+ * Unnecessary duplicate 'main' and 'input/button' declarations were removed.
+ */
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -6,8 +12,8 @@ body {
     color: #333;
 }
 
-
-input, textarea {
+input,
+textarea {
     font-family: 'Poppins', sans-serif;
     outline: none;
 }
@@ -71,6 +77,7 @@ nav {
     border-bottom: 1px solid #ccc;
     padding: 4px;
     cursor: pointer;
+    color: #333; /* Ensuring links have a color */
 }
 
 .dropdown a:last-of-type {
@@ -95,19 +102,21 @@ nav {
 }
 
 main {
-    max-width: 700px;
-    margin: 30px auto;
+    max-width: 800px; /* Consolidated from two main declarations */
+    margin: 30px auto; /* Combined margin from two declarations */
     padding: 20px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex; /* Moved from second main declaration */
+    flex-direction: column; /* Moved from second main declaration */
+    gap: 40px; /* Moved from second main declaration */
 }
 
 #landing-section {
     width: 100%;
     height: 100vh;
     position: relative;
-    background: rgba(0, 0, 0, 0.5); /* fallback */
 }
 
 #landing-section::before {
@@ -117,7 +126,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 1;
 }
 
@@ -132,46 +141,28 @@ main {
     align-items: center;
 }
 
-#main-text-wrapper h1 {
+#main-text-wrapper h1,
+#main-text-wrapper p {
     width: 100%;
     max-width: 1100px;
+    text-align: center;
+    color: #fff; /* Consolidated the white text color */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7); /* Consolidated the text shadow */
+}
+
+#main-text-wrapper h1 {
     font-size: 44px;
-    color: #fff; /* White text */
     font-weight: 600;
     letter-spacing: 8.8px;
     line-height: 1.2;
-    text-align: center;
     margin: 0;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); /* Adds depth */
 }
 
 #main-text-wrapper p {
-    width: 100%;
-    max-width: 1100px;
     font-size: 14px;
     letter-spacing: 0.5px;
     font-weight: 400;
-    color: #f0f0f0; /* Light gray for contrast */
-    text-align: center;
     padding-top: 32px;
-    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
-}
-
-#main-text-wrapper h1,
-#main-text-wrapper p {
-    color: #fff; /* white text */
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-}
-
-/* Section Styling */
-main {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    font-family: 'Poppins', sans-serif;
 }
 
 /* Reminder Form Section */
@@ -200,7 +191,10 @@ form {
     gap: 15px;
 }
 
-input, button {
+/* Consolidated input and button styles */
+input,
+button,
+textarea { /* Added textarea to this group */
     padding: 14px;
     font-size: 16px;
     border-radius: 8px;
@@ -208,7 +202,8 @@ input, button {
     transition: all 0.3s ease;
 }
 
-input:focus {
+input:focus,
+textarea:focus { /* Also applied to textarea */
     border-color: #2c786c;
     outline: none;
     box-shadow: 0 0 8px rgba(44, 120, 108, 0.3);
@@ -270,8 +265,15 @@ button:hover {
 
 /* Add subtle animation on load */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #gamification {
@@ -282,7 +284,7 @@ button:hover {
     backdrop-filter: blur(8px);
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 #progress-container {
@@ -307,7 +309,6 @@ button:hover {
     color: #2c786c;
 }
 
-
 /* STORE SECTION STYLES START */
 #store-section {
     width: 100%;
@@ -325,7 +326,7 @@ button:hover {
     margin-top: 35px;
 }
 
-#store-section > h3 {
+#store-section>h3 {
     font-size: 44px;
     font-weight: 600;
     margin: 0;
@@ -357,14 +358,14 @@ button:hover {
 
 .icon-wrapper {
     display: inline-block;
-    background-color: #e3b375;   
+    background-color: #e3b375;
     border-radius: 50%;
     padding: 40px;
     color: white;
     transition: all 0.3s;
 }
 
-.store-item:hover .icon-wrapper{
+.store-item:hover .icon-wrapper {
     transform: scale(1.1, 1.1);
 }
 
@@ -388,7 +389,7 @@ button:hover {
 #follow-section {
     display: flex;
     justify-content: stretch;
-    align-items: stretch; /* ensures both sides are equal height */
+    align-items: stretch;
 }
 
 #left-section {
@@ -399,7 +400,7 @@ button:hover {
 #left-section img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* keeps proportions, fills space */
+    object-fit: cover;
     display: block;
 }
 
@@ -409,9 +410,9 @@ button:hover {
     background-image: url('https://i.pinimg.com/736x/5f/2a/27/5f2a2756630109eff806d9d0016c8753.jpg');
     background-size: cover;
     background-position: center;
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: white;
 }
 
@@ -419,7 +420,10 @@ button:hover {
 #right-section::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.55);
     z-index: 1;
 }
@@ -430,6 +434,7 @@ button:hover {
     padding: 40px;
     text-align: center;
 }
+
 #subscribe-btn {
     background-color: #f69dad;
     padding: 16px 42px;
@@ -450,10 +455,6 @@ button:hover {
     background-color: transparent;
 }
 
-/* FOLLOW US SECTION STYLES END */
-
-
-
 /* STATS SECTION STYLES START */
 #stats-section {
     width: 100%;
@@ -466,7 +467,6 @@ button:hover {
     padding: 100px 0;
     margin: 0 auto;
     text-align: center;
-
     display: flex;
     justify-content: stretch;
 }
@@ -490,11 +490,6 @@ button:hover {
     margin: 0;
 }
 
-/* STATS SECTION STYLES END */
-
-
-
-
 /* VIDEO SECTION STYLES START */
 #video-section h3 {
     color: #8b8b99;
@@ -502,7 +497,7 @@ button:hover {
     font-weight: 400;
 }
 
-#video-section > div {
+#video-section>div {
     width: 100%;
     max-width: 1140px;
     margin: 0 auto;
@@ -522,10 +517,6 @@ button:hover {
     height: 425px;
 }
 
-/* VIDEO SECTION STYLES END */
-
-
-
 /* ADDRESS SECTION STYLES START */
 #address-wrapper {
     width: 100%;
@@ -536,11 +527,11 @@ button:hover {
     padding: 100px 0;
 }
 
-#address-wrapper > div {
+#address-wrapper>div {
     width: 50%;
 }
 
-#address-wrapper > div:last-of-type{
+#address-wrapper>div:last-of-type {
     width: 40%;
 }
 
@@ -553,8 +544,8 @@ button:hover {
 }
 
 .section-heading {
-    font-size: 600;
-    font-size: 44px;
+    font-size: 44px; /* Consolidated font-weight to this declaration */
+    font-weight: 600;
     margin: 0;
 }
 
@@ -619,10 +610,6 @@ button:hover {
     font-size: 16px;
 }
 
-/* ADDRESS SECTION STYLES END */
-
-
-
 /* FOOTER SECTION STYLES START */
 footer {
     background-color: #232323;
@@ -631,4 +618,68 @@ footer {
     letter-spacing: 0.5px;
     text-align: center;
     padding: 30px 0px;
+}
+
+/*
+ * MOBILE MEDIA QUERY
+ * Adjusts layout for screens up to 768px wide (standard for most phones and tablets in portrait mode).
+ */
+@media (max-width: 768px) {
+    /* General adjustments for mobile */
+    .menu-item {
+        display: none;
+    }
+
+    .primary-button {
+        margin-right: 0
+    }
+
+    #main-text-wrapper > h1 {
+        font-size: 28px;
+    }
+
+    #main-text-wrapper > p {
+        padding: 16px;
+        box-sizing: border-box;
+    }
+
+    #store-items-wrapper,
+    #stats-wrapper,
+    #follow-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .store-item,
+    .stats-item,
+    #left-section,
+    #right-section,
+    #address-wrapper > div {
+        width: 100%;
+        padding: 0;
+    }
+    
+    #address-wrapper > div:last-of-type {
+        width: 100%;
+    }
+
+    #right-section {
+        min-height: 400px;
+    }
+
+    #address-wrapper {
+        flex-direction: column;
+        padding: 20px;
+        gap: 30px;
+    }
+
+    #video-section iframe {
+        height: 250px;
+    }
+
+    #store-section > h3,
+    .section-heading,
+    .stats-item h3 {
+        font-size: 32px;
+    }
 }
