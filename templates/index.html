@@ -12,33 +12,27 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- JS -->
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
+
 
 </head>
 <body>
+    <!-- ========== HEADER / NAV ========== -->
     <header>
-
         <nav>
             <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
-
             <div>
-                <a class="menu-item">Reminder</i></a>
-                <div class="dropdown-wrapper">
-                    <a class="menu-item">Store<i class="fas fa-caret-down"></i></a>
-
-                    <div class="dropdown">
-                        <a>Meds</a>
-                        
-                    </div>
-                </div>
-                <a class="menu-item">Demo Video</i></a>
-                <div class="dropdown-wrapper">
-                    <a class="menu-item">Contuct us<i class="fas fa-caret-down"></i></a>
-                </div>
-                <button class="primary-button">Subscrie</button>
+                <a class="menu-item">Reminder</a>
+                <a class="menu-item">Store</a>
+                <a class="menu-item">Demo Video</a>
+                <a class="menu-item">Contact</a>
+                <button class="primary-button">Subscribe</button>
             </div>
         </nav>
 
+        <!-- Intro Hero Section -->
         <section id="landing-section">
             <div id="main-text-wrapper">
                 <h1>Robel's Community Pharmacy Reminder System</h1>
@@ -47,15 +41,23 @@
         </section>
     </header>
 
+    <!-- ========== Reminder Form ========== -->
     <main>
-        <section id="reminder-form"></section>
-            <h2>Set Your Medication Reminder</h2>
-            <form id="med-form">
-                <input type="text" id="name" placeholder="Your Name" required>
-                <input type="text" id="medication" placeholder="Medication Name" required>
-                <input type="time" id="time" required>
-                <button type="submit">Set Reminder</button>
-            </form>
+        <section id="reminder-form">
+            <div class="card">
+<h2>Set Your Medication Reminder</h2>
+<form id="med-form">
+    <input type="text" id="name" placeholder="Patient Name" required>
+    <input type="text" id="medication" placeholder="Medication" required>
+    <input type="time" id="time" required>
+    <!-- SMS toggle -->
+                <input type="tel" id="phone" placeholder="Phone Number (for SMS reminder)">
+                <label>
+                    <input type="checkbox" id="sms-toggle"> Send me SMS reminder
+                </label>
+    <button type="submit">Set Reminder</button>
+</form>
+</div>
         </section>
 
         <section id="reminder-list">
@@ -64,16 +66,60 @@
         </section>
     </main>
 
+    <!-- ========== GAMIFICATION ========== -->
     <section id="gamification">
-    <h2>🎯 Your Progress</h2>
-    <p>Complete your medications and earn points!</p>
-    <div id="progress-container">
-        <div id="progress-bar"></div>
+        <h2>🎯 Your Progress</h2>
+        <p>Complete your medications and earn points!</p>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <p><span id="points">0</span> points earned!</p>
+    </section>
+
+<!-- Chatbot + Medicine Assistant -->
+<section id="assistant-section">
+    <h2 id="Chatbot-title">💬 AI Chatbot & Medicine Search</h2>
+    <div id="assistant-wrapper">
+
+        <!-- Chatbot Box -->
+        <section id="chatbot-section">
+    <div id="chatbox">
+        <h2>Your Personal Health Assistant</h2>
+        <div id="chat-log"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask me anything...">
+            <button id="chat-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
-    <p><span id="points">0</span> points earned!</p>
+</section>
+
+        <!-- Medicine Search Box -->
+        <div id="medicine-search">
+            <h3>🔎 Medicine Info</h3>
+            <input id="medicine-input" type="text" placeholder="Enter medicine name..." />
+            <button id="medicine-btn">Search</button>
+            <div id="medicine-result"></div>
+        </div>
+
+    </div>
 </section>
 
 
+<section id="analytics">
+    <h2>📊 Your Analytics</h2>
+    <div class="chart-container">
+        <div class="chart-wrapper">
+            <canvas id="reminderChart"></canvas>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- ========== STORE SECTION ========== -->
     <section id="store-section">
             <p id="store-heading">Service We Provide</p>
             <h3>Daily reminder</h3>
@@ -102,6 +148,7 @@
             </div>
         </section>
 
+<!-- ========== STORE SECTION ========== -->
         <section id="store-section">
         <p class="green-heading">Online Pharmacy</p>
         <h3>Your Health is Our Priority</h3>
@@ -130,7 +177,7 @@
             </div>
         </div>
     </section>
-
+<!-- ========== SUBSCRIPTION SECTION ========== -->
     <section id="subscription-section">
         <div class="subscription-wrapper">
             <h2>24/7 Online Consulting</h2>
@@ -143,7 +190,7 @@
             <button class="primary-button subscribe-btn">Start Free Trial</button>
         </div>
     </section>
-
+<!-- ========== ADDITIONAL SECTIONS ========== -->
     <section id="follow-section">
             <div id="left-section">
                 <img src="https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg" alt="Medicine" />
@@ -158,27 +205,7 @@
                 </div>
             </div>
         </section>
-
-        <section id="stats-section">
-            <div id="stats-wrapper">
-                <div class="stats-item">
-                    <h3>7</h3>
-                    <p>Year of experiences</p>
-                </div>
-                <div class="stats-item">
-                    <h3>123k</h3>
-                    <p>Happy and Healthy Customers</p>
-                </div>
-                <div class="stats-item">
-                    <h3>72k +</h3>
-                    <p>Daily USer's</p>
-                </div>
-                <div class="stats-item">
-                    <h3>13k</h3>
-                    <p>Positive Feedback</p>
-                </div>
-            </div>
-        </section>
+<!-- ========== TESTIMONIALS ========== -->
 
         <section id="testimonials-section">
             <h3>A Healthy Habit Starts Here</h3>
@@ -205,7 +232,8 @@
                 </div>
             </div>
         </section>
-
+        
+<!-- ========== VIDEO SECTION ========== -->
         <section id="video-section">
             <div>
                 <h3>Demo Video On How to Use Our Website</h3>
@@ -214,7 +242,7 @@
                 <video src=""></video>
             </div>
         </section>
-
+<!-- ========== CONTACT SECTION ========== -->
         <section id="address-section">
             <div id="address-wrapper">
                 <div>
@@ -247,6 +275,7 @@
 </section>
 
                 </div>
+                
                 <div>
                     <p class="green-heading">Meet Our Team</p>
                     <h3 class="section-heading">Get In Touch</h3>
@@ -264,7 +293,7 @@
             </div>
         </section>
     </main>
-
+<!-- ========== FOOTER ========== -->
     <footer>© Copyright 2018 Mobirise - All Rights Reserved</footer>
 </body>
 </html>

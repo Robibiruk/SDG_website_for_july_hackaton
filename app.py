@@ -1,22 +1,28 @@
+# app.py
 from flask import Flask, request, jsonify, render_template
 import sqlite3
 
 app = Flask(__name__)
 
-# Create DB table if not exists
-def init_db():
-    conn = None
-    try:
-        conn = sqlite3.connect("reminders.db")
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS reminders
-                     (id INTEGER PRIMARY KEY, name TEXT, medication TEXT, time TEXT)''')
-        conn.commit()
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
-    finally:
-        if conn:
-            conn.close()
+# Create DB table with the new 'is_taken' column
+# Database setup
+def create_db():
+    conn = sqlite3.connect("reminders.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reminders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            medication TEXT,
+            time TEXT,
+            is_taken INTEGER DEFAULT 0
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+# Call this function once when the app starts
+create_db()
 
 @app.route("/")
 def index():
@@ -31,31 +37,54 @@ def add_reminder():
         time = data["time"]
 
         conn = sqlite3.connect("reminders.db")
-        c = conn.cursor()
-        c.execute("INSERT INTO reminders (name, medication, time) VALUES (?, ?, ?)",
-                  (name, medication, time))
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO reminders (name, medication, time) VALUES (?, ?, ?)", (name, medication, time))
+        new_id = cursor.lastrowid
         conn.commit()
-        return jsonify({"status": "success"}), 201  # 201 Created
+        conn.close()
+        
+        return jsonify({"status": "success", "message": "Reminder added!", "id": new_id})
+
     except (sqlite3.Error, KeyError) as e:
         print(f"Error adding reminder: {e}")
         return jsonify({"status": "error", "message": "Invalid request or database error."}), 400
 
-@app.route("/get_reminders", methods=["GET"])
+@app.route("/get_reminders")
 def get_reminders():
     try:
         conn = sqlite3.connect("reminders.db")
-        c = conn.cursor()
-        c.execute("SELECT * FROM reminders")
-        reminders = [{"id": row[0], "name": row[1], "medication": row[2], "time": row[3]} for row in c.fetchall()]
-        return jsonify(reminders), 200
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, medication, time, is_taken FROM reminders")
+        reminders = [
+            {"id": row[0], "name": row[1], "medication": row[2], "time": row[3], "is_taken": row[4]}
+            for row in cursor.fetchall()
+        ]
+        conn.close()
+        return jsonify(reminders)
     except sqlite3.Error as e:
-        print(f"Error getting reminders: {e}")
+        print(f"Error fetching reminders: {e}")
         return jsonify({"status": "error", "message": "Database error."}), 500
 
+# ✅ New route to update the 'is_taken' status in the database
+@app.route("/update_status", methods=["POST"])
+def update_status():
+    try:
+        data = request.json
+        reminder_id = data["id"]
+        is_taken = data["is_taken"]
+
+        conn = sqlite3.connect("reminders.db")
+        c = conn.cursor()
+        c.execute("UPDATE reminders SET is_taken = ? WHERE id = ?", (is_taken, reminder_id))
+        conn.commit()
+        return jsonify({"status": "success"}), 200
+    except (sqlite3.Error, KeyError) as e:
+        print(f"Error updating status: {e}")
+        return jsonify({"status": "error", "message": "Invalid request or database error."}), 400
 
 @app.route("/send_sms", methods=["POST"])
 def send_sms():
-    # This is a placeholder. For a real app, you would integrate a service like Twilio here.
+    # Placeholder for SMS service integration
     try:
         data = request.json
         phone = data.get("phone")
@@ -66,19 +95,16 @@ def send_sms():
         print(f"Error sending SMS: {e}")
         return jsonify({"status": "error", "message": "Failed to process SMS request."}), 400
 
-
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
     data = request.get_json()
     user_message = data.get("message", "").lower()
-
     if "hello" in user_message:
         reply = "Hi there! How can I help you today? 😊"
     elif "reminder" in user_message:
         reply = "I can help you set reminders for your medicines!"
     else:
         reply = "I'm a simple demo bot 🤖. Ask me about medicines or reminders!"
-
     return jsonify({"reply": reply}), 200
 
 @app.route("/medicine_search", methods=["POST"])
@@ -86,8 +112,6 @@ def medicine_search():
     try:
         data = request.get_json()
         medicine = data.get("medicine", "").lower()
-
-        # ✅ FIXED SYNTAX: This is now a proper dictionary with key-value pairs.
         medicine_db = {
             "lisinopril": "ACE inhibitor used for hypertension and heart failure.",
             "levothyroxine": "Thyroid hormone replacement for hypothyroidism.",
@@ -126,9 +150,10 @@ def medicine_search():
             "bupropion": "Antidepressant and smoking cessation aid.",
             "oxycodone": "Opioid combination for severe pain.",
             "acetaminophen": "Pain reliever and fever reducer.",
-            "hydrocodone": "Opioid combination for pain relief.",
+            "hydrocodone": "Opioid combination for pain.",
             "ethinyl estradiol": "Oral contraceptive pill.",
             "norgestimate": "Oral contraceptive pill.",
+            "tiotropium": "Anticholinergic inhaler for COPD.",
             "cyclobenzaprine": "Muscle relaxant.",
             "cephalexin": "Antibiotic for bacterial infections.",
             "tiotropium": "Anticholinergic inhaler for COPD.",
@@ -153,8 +178,15 @@ def medicine_search():
             "morphine": "Opioid for severe pain.",
             "hydrocodone": "Opioid combination for pain.",
             "acetaminophen": "Pain reliever and fever reducer.",
-            "codeine": "Opioid for mild to moderate pain.",
             "gabapentin": "Used for nerve pain and seizures.",
+            "pregabalin": "Used for nerve pain and seizures.",
+            "metoclopramide": "For nausea and gastroparesis.",
+            "morphine": "Opioid for severe pain.",
+            "fentanyl": "Potent opioid for severe pain.",
+            "oxycodone": "Opioid for moderate to severe pain.",
+            "hydromorphone": "Potent opioid for severe pain.",
+            "buprenorphine": "Opioid for pain and opioid dependence.",
+            "methadone": "Opioid for pain and opioid dependence.",
             "pioglitazone": "Thiazolidinedione for type 2 diabetes.",
             "sitagliptin": "DPP-4 inhibitor for diabetes.",
             "liraglutide": "GLP-1 agonist for diabetes.",
@@ -208,25 +240,61 @@ def medicine_search():
             "ibuprofen": "NSAID pain reliever and fever reducer.",
             "advil": "NSAID pain reliever and fever reducer.",
             "motrin": "NSAID pain reliever and fever reducer.",
+            "motrin": "NSAID pain reliever and fever reducer.",
             "aspirin": "Pain reliever, fever reducer, blood thinner.",
             "diphenhydramine": "Antihistamine for allergies and sleep.",
             "benadryl": "Antihistamine for allergies and sleep.",
+            "fexofenadine": "Non-drowsy antihistamine.",
             "loratadine": "Non-drowsy antihistamine.",
             "claritin": "Non-drowsy antihistamine.",
             "cetirizine": "Non-drowsy antihistamine.",
             "zyrtec": "Non-drowsy antihistamine.",
             "fexofenadine": "Non-drowsy antihistamine.",
-            "allegra": "Non-drowsy antihistamine.",
-            "pseudoephedrine": "Decongestant.",
             "ranitidine": "H2 blocker for GERD (withdrawn in many markets).",
             "famotidine": "H2 blocker for GERD.",
+            "omeprazole": "PPI for GERD and ulcers.",
+            "prilosec": "PPI for GERD and ulcers.",
             "pepcid": "H2 blocker for GERD.",
+            "lansoprazole": "PPI for GERD and ulcers.",
+            "prevacid": "PPI for GERD and ulcers.",
+            "pantoprazole": "PPI for GERD and ulcers.",
+            "protonix": "PPI for GERD and ulcers.",
+            "esomeprazole": "PPI for GERD and ulcers.",
+            "nexium": "PPI for GERD and ulcers.",
+            "allegra": "Non-drowsy antihistamine.",
+            "albuterol": "Inhaler for asthma and COPD.",
+            "ventolin": "Inhaler for asthma and COPD.",
+            "proair": "Inhaler for asthma and COPD.",
+            "advair": "Combination inhaler for asthma and COPD.",
+            "ipratropium": "Inhaler for COPD.",
+            "spiriva": "Inhaler for COPD.",
+            "theophylline": "Bronchodilator for asthma and COPD.",
+            "montelukast": "Leukotriene receptor antagonist for asthma.",
+            "singulair": "Leukotriene receptor antagonist for asthma.",
+            "tiotropium": "Anticholinergic inhaler for COPD.",
+            "atrovent": "Inhaler for COPD.",
+            "fluticasone": "Combination inhaler for asthma and COPD.",
+            "advair": "Combination inhaler for asthma and COPD.",
+            "salmeterol": "Long-acting beta-agonist for asthma and COPD.",
+            "formoterol": "Long-acting beta-agonist for asthma and COPD.",
+            "fluticasone": "Corticosteroid for allergies and asthma.",
+            "flonase": "Nasal spray for allergies.",
+            "flovent": "Inhaled corticosteroid for asthma.",
+            "mometasone": "Nasal spray for allergies.",
+            "nasonex": "Nasal spray for allergies.",
+            "budesonide": "Corticosteroid for asthma.",
+            "pulmicort": "Inhaled corticosteroid for asthma.",
+            "triamcinolone": "Corticosteroid for allergies.",
             "loperamide": "Anti-diarrheal.",
+            "metoclopramide": "For nausea and gastroparesis.",
+            "prochlorperazine": "For nausea and vertigo.",
             "imodium": "Anti-diarrheal.",
             "bismuth subsalicylate": "For upset stomach and diarrhea.",
             "pepto-bismol": "For upset stomach and diarrhea.",
+            "melatonin": "Sleep aid.",
             "guaifenesin": "Expectorant for cough.",
             "mucinex": "Expectorant for cough.",
+            "codeine": "Cough suppressant and pain reliever.",
             "dextromethorphan": "Cough suppressant.",
             "pseudoephedrine": "Decongestant.",
             "sudafed": "Decongestant.",
@@ -237,12 +305,18 @@ def medicine_search():
             "tums": "Antacid for heartburn.",
             "magnesium hydroxide": "Antacid and laxative.",
             "milk of magnesia": "Antacid and laxative.",
+            "docusate sodium": "Stool softener.",
+            "colace": "Stool softener.",
+            "bisacodyl": "Stimulant laxative.",
             "senna": "Laxative.",
             "polyethylene glycol": "Osmotic laxative.",
             "miralax": "Osmotic laxative.",
-            "docusate": "Stool softener."
-        }
+            "aluminum hydroxide": "Antacid.",
+            "simethicone": "Anti-gas.",
+            "pepcid ac": "H2 blocker for GERD.",
+            "zantac": "H2 blocker for GERD (withdrawn in many markets)."
 
+        }
         info = medicine_db.get(medicine, "Sorry, I don’t have information about this medicine.")
         return jsonify({"info": info}), 200
     except Exception as e:
@@ -250,5 +324,5 @@ def medicine_search():
         return jsonify({"status": "error", "message": "Failed to process medicine search request."}), 400
 
 if __name__ == "__main__":
-    init_db()
+    create_db()  # <-- The correct function to call
     app.run(debug=True)
