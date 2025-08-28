@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Caveat:400,700&subset=cyrillic" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <title>Community Pharmacy Reminder</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+
+</head>
+<body>
+    <header>
+
+        <nav>
+            <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
+
+            <div>
+                <a class="menu-item">Reminder</i></a>
+                <div class="dropdown-wrapper">
+                    <a class="menu-item">Store<i class="fas fa-caret-down"></i></a>
+
+                    <div class="dropdown">
+                        <a>Meds</a>
+                        
+                    </div>
+                </div>
+                <a class="menu-item">Demo Video</i></a>
+                <div class="dropdown-wrapper">
+                    <a class="menu-item">Contuct us<i class="fas fa-caret-down"></i></a>
+                </div>
+                <button class="primary-button">Subscrie</button>
+            </div>
+        </nav>
+
+        <section id="landing-section">
+            <div id="main-text-wrapper">
+                <h1>Robel's Community Pharmacy Reminder System</h1>
+                <p>Helping you stay on track with your medications</p>
+            </div>
+        </section>
+    </header>
+
+    <main>
+        <section id="reminder-form"></section>
+            <h2>Set Your Medication Reminder</h2>
+            <form id="med-form">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="text" id="medication" placeholder="Medication Name" required>
+                <input type="time" id="time" required>
+                <button type="submit">Set Reminder</button>
+            </form>
+        </section>
+
+        <section id="reminder-list">
+            <h2>📋 Your Reminders</h2>
+            <ul id="reminders"></ul> 
+        </section>
+    </main>
+
+    <section id="gamification">
+    <h2>🎯 Your Progress</h2>
+    <p>Complete your medications and earn points!</p>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <p><span id="points">0</span> points earned!</p>
+</section>
+
+
+    <section id="store-section">
+            <p id="fresh-food-heading">Service We Provide</p>
+            <h3>Daily reminder</h3>
+            <p id="store-desc">We help you remember your medication schedule.</p>
+            <div id="store-items-wrapper">
+                <div class="store-item">
+                    <div class="icon-wrapper"><i class="fa-solid fa-comment-medical"></i></div>
+                    <h3>Healthcare Advice</h3>
+                    <p>Get professional advice on managing your health and medications.</p>
+                </div>
+                <div class="store-item">
+                    <div class="icon-wrapper"><i class="fa-solid fa-capsules"></i></div>
+                    <h3>OTC Medications</h3>
+                    <p>Over-the-counter medications available without a prescription.</p>
+                </div>
+                <div class="store-item">
+                    <div class="icon-wrapper"><i class="fa-solid fa-truck"></i></div>
+                    <h3>Free Delivery</h3>
+                    <p>Enjoy free delivery on all orders over $50 in Addis Ababa and Hawassa.</p>
+                </div>
+                <div class="store-item">
+                    <div class="icon-wrapper"><i class="fa-solid fa-headset"></i></div>
+                    <h3>Online Consultation</h3>
+                    <p>Get expert advice from the comfort of your home.</p>
+                </div>
+            </div>
+        </section>
+
+    <section id="follow-section">
+            <div id="left-section">
+                <img src="https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg" alt="Medicine" />
+            </div>
+            <div id="right-section">
+                <div id="text-wrapper">
+                    <h3>Subscribe to Get notified through email</h3>
+                    <p>Stay updated with the latest news and offers from our pharmacy.</p>
+
+                    <input id="subscribe-email" placeholder="Your Email" />
+                    <input id="subscribe-btn" type="submit" value="Subscribe" />
+                </div>
+            </div>
+        </section>
+
+        <section id="stats-section">
+            <div id="stats-wrapper">
+                <div class="stats-item">
+                    <h3>7</h3>
+                    <p>Year of experiences</p>
+                </div>
+                <div class="stats-item">
+                    <h3>123k</h3>
+                    <p>Happy and Healthy Customers</p>
+                </div>
+                <div class="stats-item">
+                    <h3>72k +</h3>
+                    <p>Daily USer's</p>
+                </div>
+                <div class="stats-item">
+                    <h3>13k</h3>
+                    <p>Positive Feedback</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="video-section">
+            <div>
+                <h3>Demo Video On How to Use Our Website</h3>
+                <div id="line-separator"></div>
+
+                <video src=""></video>
+            </div>
+        </section>
+
+        <section id="address-section">
+            <div id="address-wrapper">
+                <div>
+                    <p class="green-heading">Contact Us</p>
+                    <h3 class="section-heading">Address Information</h3>
+                    <p class="section-description">Not taking Meds on time is one of the problems that lead to other complications</p>
+
+                    <h4 class="address-heading">Addis Ababa Store</h4>
+                    <p class="address-lines">
+                        Eliana Building E<br>6th floor Addis<br>Monday to Friday : 9am to 8pm<br>natim7520@gmail.com</p>
+
+                    <!-- Contact Section -->
+<section id="contact" style="padding: 40px 20px; background: #f5f5f5; text-align: center; border-radius: 12px; margin-top: 40px;">
+    <h2>Contact Me</h2>
+    <p>Let's connect! Reach out through any of the platforms below:</p>
+    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
+        <a href="tel:+1234567890" target="_blank" class="contact-link">
+            <i class="fas fa-phone"></i> +1 234 567 890
+        </a>
+        <a href="mailto:natim7520@gmail.com" target="_blank" class="contact-link">
+            <i class="fas fa-envelope"></i> natim7520@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/robel-biruk-5923101b5" target="_blank" class="contact-link">
+            <i class="fab fa-linkedin"></i> LinkedIn
+        </a>
+        <a href="https://github.com/Robibiruk" target="_blank" class="contact-link">
+            <i class="fab fa-github"></i> GitHub
+        </a>
+    </div>
+</section>
+
+                </div>
+                <div>
+                    <p class="green-heading">Meet Our Team</p>
+                    <h3 class="section-heading">Get In Touch</h3>
+                    <p class="section-description">It's Our Main Priority to Remind you to take Your Meds on Time.</p>
+
+                    <form>
+                        <input class="input-box" type="text" name="name" placeholder="Name" />
+                        <input class="input-box" type="text" name="phone" placeholder="Phone" />
+                        <input class="input-box" type="text" name="subject" placeholder="Subject" />
+                        <input class="input-box" type="email" name="email" placeholder="E-mail" />
+                        <textarea class="input-box">Message</textarea>
+                        <input id="btn-submit" class="primary-button" type="submit" value="Submit Now">
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>© Copyright 2018 Mobirise - All Rights Reserved</footer>
+</body>
+</html>
+   
+</body>
+</html>
