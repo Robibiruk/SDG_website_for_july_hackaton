@@ -3,6 +3,7 @@ import json
 from flask import Flask, render_template, jsonify, request
 import requests
 import sqlite3  # Added for local database access
+from firebase_admin import credentials, initialize_app
 
 app = Flask(__name__)
 
@@ -20,9 +21,22 @@ FIREBASE_CONFIG = {
     "measurementId": os.getenv("FIREBASE_MEASUREMENT_ID", "G-JVP5PM8J4N"),
 }
 
+# ---- Firebase Admin Initialization (uses JSON in ENV var) ----
+firebase_key_json = os.getenv("FIREBASE_KEY_JSON")
+if firebase_key_json:
+    try:
+        firebase_creds = json.loads(firebase_key_json)
+        cred = credentials.Certificate(firebase_creds)
+        initialize_app(cred)
+    except Exception as e:
+        print(f"⚠️ Firebase Admin init failed: {e}")
+else:
+    print("⚠️ No FIREBASE_KEY_JSON found in environment. Admin SDK not initialized.")
+
 # ---- Gemini API Key (KEEP SECRET) ----
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_API_KEY = "AIzaSyAgXp1rm13e28b---"  # Quick test only
+# Quick test only (REMOVE in production):
+# GEMINI_API_KEY = "AIzaSyAgXp1rm13e28b---"
 
 # ---- Track messages per session (IP-based demo) ----
 user_message_count = {}
