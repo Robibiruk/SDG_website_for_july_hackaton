@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Pharmacy Reminder</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Caveat:400,700&subset=cyrillic" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <title>Community Pharmacy Reminder</title>
-    <!-- CSS -->
+
+    <!-- Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- JS -->
-    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-</head>
-
-
 </head>
 <body>
-    <!-- ========== HEADER / NAV ========== -->
+    <!-- HEADER -->
     <header>
         <nav>
             <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
             <div>
-                <a class="menu-item">Reminder</a>
-                <a class="menu-item">Store</a>
-                <a class="menu-item">Demo Video</a>
-                <a class="menu-item">Contact</a>
+                <a href="#reminder-form" class="menu-item">Reminder</a>
+                <a href="#store-section" class="menu-item">Store</a>
+                <a href="#analytics" class="menu-item">Analytics</a>
+                <a href="#video-section" class="menu-item">Demo Video</a>
+                <a href="#address-section" class="menu-item">Contact</a>
                 <button class="primary-button">Subscribe</button>
             </div>
         </nav>
-
-        <!-- Intro Hero Section -->
         <section id="landing-section">
             <div id="main-text-wrapper">
                 <h1>Robel's Community Pharmacy Reminder System</h1>
@@ -41,262 +35,234 @@
         </section>
     </header>
 
-    <!-- ========== Reminder Form ========== -->
+    <!-- REMINDER FORM -->
     <main>
         <section id="reminder-form">
             <div class="card">
-<h2>Set Your Medication Reminder</h2>
-<form id="med-form">
-    <input type="text" id="name" placeholder="Patient Name" required>
-    <input type="text" id="medication" placeholder="Medication" required>
-    <input type="time" id="time" required>
-    <!-- SMS toggle -->
-                <input type="tel" id="phone" placeholder="Phone Number (for SMS reminder)">
-                <label>
-                    <input type="checkbox" id="sms-toggle"> Send me SMS reminder
-                </label>
-    <button type="submit">Set Reminder</button>
-</form>
-</div>
-        </section>
-
-        <section id="reminder-list">
-            <h2>📋 Your Reminders</h2>
-            <ul id="reminders"></ul> 
-        </section>
-    </main>
-
-    <!-- ========== GAMIFICATION ========== -->
-    <section id="gamification">
-        <h2>🎯 Your Progress</h2>
-        <p>Complete your medications and earn points!</p>
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
-        <p><span id="points">0</span> points earned!</p>
-    </section>
-
-<!-- Chatbot + Medicine Assistant -->
-<section id="assistant-section">
-    <h2 id="Chatbot-title">💬 AI Chatbot & Medicine Search</h2>
-    <div id="assistant-wrapper">
-
-        <!-- Chatbot Box -->
-        <section id="chatbot-section">
-    <div id="chatbox">
-        <h2>Your Personal Health Assistant</h2>
-        <div id="chat-log"></div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="Ask me anything...">
-            <button id="chat-send">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-</section>
-
-        <!-- Medicine Search Box -->
-        <div id="medicine-search">
-            <h3>🔎 Medicine Info</h3>
-            <input id="medicine-input" type="text" placeholder="Enter medicine name..." />
-            <button id="medicine-btn">Search</button>
-            <div id="medicine-result"></div>
-        </div>
-
-    </div>
-</section>
-
-
-<section id="analytics">
-    <h2>📊 Your Analytics</h2>
-    <div class="chart-container">
-        <div class="chart-wrapper">
-            <canvas id="reminderChart"></canvas>
-        </div>
-        <div class="chart-wrapper">
-            <canvas id="trendChart"></canvas>
-        </div>
-    </div>
-</section>
-
-<!-- ========== STORE SECTION ========== -->
-    <section id="store-section">
-            <p id="store-heading">Service We Provide</p>
-            <h3>Daily reminder</h3>
-            <p id="store-desc">We help you remember your medication schedule.</p>
-            <div id="store-items-wrapper">
-                <div class="store-item">
-                    <div class="icon-wrapper"><i class="fa-solid fa-comment-medical"></i></div>
-                    <h3>Healthcare Advice</h3>
-                    <p>Get professional advice on managing your health and medications.</p>
-                </div>
-                <div class="store-item">
-                    <div class="icon-wrapper"><i class="fa-solid fa-capsules"></i></div>
-                    <h3>OTC Medications</h3>
-                    <p>Over-the-counter medications available without a prescription.</p>
-                </div>
-                <div class="store-item">
-                    <div class="icon-wrapper"><i class="fa-solid fa-truck"></i></div>
-                    <h3>Free Delivery</h3>
-                    <p>Enjoy free delivery on all orders over $50 in Addis Ababa and Hawassa.</p>
-                </div>
-                <div class="store-item">
-                    <div class="icon-wrapper"><i class="fa-solid fa-headset"></i></div>
-                    <h3>Online Consultation</h3>
-                    <p>Get expert advice from the comfort of your home.</p>
-                </div>
+                <h2>Set Your Medication Reminder</h2>
+                <form id="med-form">
+                    <input type="text" id="name" placeholder="Patient Name" required>
+                    <input type="text" id="medication" placeholder="Medication" required>
+                    <input type="time" id="time" required>
+                    <input type="tel" id="phone" placeholder="Phone Number (for SMS reminder)">
+                    <label>
+                        <input type="checkbox" id="sms-toggle"> Send me SMS reminder
+                    </label>
+                    <button type="submit">Set Reminder</button>
+                </form>
             </div>
         </section>
 
-<!-- ========== STORE SECTION ========== -->
-        <section id="store-section">
+        <!-- REMINDERS LIST -->
+        <section id="reminder-list">
+            <h2>📋 Your Reminders</h2>
+            <ul id="reminders"></ul>
+        </section>
+    </main>
+
+    <!-- GAMIFICATION -->
+    <section id="gamification">
+        <h2>🎯 Your Progress</h2>
+        <p>Complete your medications and earn points!</p>
+        <div id="progress-container"><div id="progress-bar"></div></div>
+        <p><span id="points">0</span> points earned!</p>
+    </section>
+
+    <!-- CHATBOT + MEDICINE SEARCH -->
+    <section id="assistant-section">
+        <h2 id="Chatbot-title">💬 AI Chatbot & Medicine Search</h2>
+        <div id="assistant-wrapper">
+            <section id="chatbot-section">
+                <div id="chatbox">
+                    <h2>Your Personal Health Assistant</h2>
+                    <div id="chat-log"></div>
+                    <div id="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Ask me anything...">
+                        <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
+                        <br>
+                        <button id="subscribe-chat" class="primary-button" style="margin-top:12px;">
+                            Get 24/7 Consulting — $9.99
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <div id="medicine-search">
+                <h3>🔎 Medicine Info</h3>
+                <input id="medicine-input" type="text" placeholder="Enter medicine name..." />
+                <button id="medicine-btn">Search</button>
+                <div id="medicine-result"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section id="analytics">
+        <h2>📊 Your Analytics</h2>
+        <div class="chart-container">
+            <div class="chart-wrapper"><canvas id="reminderChart"></canvas></div>
+            <div class="chart-wrapper"><canvas id="trendChart"></canvas></div>
+        </div>
+    </section>
+
+    <!-- ========== STORE SECTION ========== -->
+    <section id="store-section">
+        <p id="store-heading">Service We Provide</p>
+        <h3>Daily reminder</h3>
+        <p id="store-desc">We help you remember your medication schedule.</p>
+        <div id="store-items-wrapper">
+            <div class="store-item">
+                <div class="icon-wrapper"><i class="fa-solid fa-comment-medical"></i></div>
+                <h3>Healthcare Advice</h3>
+                <p>Get professional advice on managing your health and medications.</p>
+            </div>
+            <div class="store-item">
+                <div class="icon-wrapper"><i class="fa-solid fa-capsules"></i></div>
+                <h3>OTC Medications</h3>
+                <p>Over-the-counter medications available without a prescription.</p>
+            </div>
+            <div class="store-item">
+                <div class="icon-wrapper"><i class="fa-solid fa-truck"></i></div>
+                <h3>Free Delivery</h3>
+                <p>Enjoy free delivery on all orders over $50 in Addis Ababa and Hawassa.</p>
+            </div>
+            <div class="store-item">
+                <div class="icon-wrapper"><i class="fa-solid fa-headset"></i></div>
+                <h3>Online Consultation</h3>
+                <p>Get expert advice from the comfort of your home.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="store-section">
         <p class="green-heading">Online Pharmacy</p>
         <h3>Your Health is Our Priority</h3>
         <p class="section-description">Shop for a wide range of health products delivered right to your door.</p>
         <div id="store-items-wrapper" class="product-grid">
             <div class="store-item product-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-tablets"></i>
-                </div>
+                <div class="icon-wrapper"><i class="fa-solid fa-tablets"></i></div>
                 <h3>Vitamins & Supplements</h3>
                 <p>Support your health goals with our high-quality vitamins and supplements.</p>
             </div>
             <div class="store-item product-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-box"></i>
-                </div>
+                <div class="icon-wrapper"><i class="fa-solid fa-box"></i></div>
                 <h3>Smart Pillboxes</h3>
                 <p>Never miss a dose with smart pillboxes that connect directly to our app.</p>
             </div>
             <div class="store-item product-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-prescription-bottle-medical"></i>
-                </div>
+                <div class="icon-wrapper"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
                 <h3>OTC Drugs</h3>
                 <p>Conveniently order over-the-counter medication for common ailments.</p>
             </div>
         </div>
     </section>
-<!-- ========== SUBSCRIPTION SECTION ========== -->
+
+    <!-- ========== SUBSCRIPTION SECTION ========== -->
     <section id="subscription-section">
         <div class="subscription-wrapper">
             <h2>24/7 Online Consulting</h2>
             <p class="sub-description">Get expert medical advice anytime, anywhere. Our qualified pharmacists are ready to assist you around the clock.</p>
             <div class="price-box">
-                <span class="price">$9.99</span>
-                <span class="per-month">/month</span>
+                <span class="price">$9.99</span><span class="per-month">/month</span>
             </div>
             <p class="trial-text">1-month free trial included</p>
             <button class="primary-button subscribe-btn">Start Free Trial</button>
         </div>
     </section>
-<!-- ========== ADDITIONAL SECTIONS ========== -->
+
+    <!-- ========== FOLLOW SECTION ========== -->
     <section id="follow-section">
-            <div id="left-section">
-                <img src="https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg" alt="Medicine" />
+        <div id="left-section">
+            <img src="https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg" alt="Medicine" />
+        </div>
+        <div id="right-section">
+            <div id="text-wrapper">
+                <h3>Subscribe to Get notified through email</h3>
+                <p>Stay updated with the latest news and offers from our pharmacy.</p>
+                <input id="subscribe-email" placeholder="Your Email" />
+                <input id="subscribe-btn" type="submit" value="Subscribe" />
             </div>
-            <div id="right-section">
-                <div id="text-wrapper">
-                    <h3>Subscribe to Get notified through email</h3>
-                    <p>Stay updated with the latest news and offers from our pharmacy.</p>
+        </div>
+    </section>
 
-                    <input id="subscribe-email" placeholder="Your Email" />
-                    <input id="subscribe-btn" type="submit" value="Subscribe" />
-                </div>
+    <!-- ========== TESTIMONIALS ========== -->
+    <section id="testimonials-section">
+        <h3>A Healthy Habit Starts Here</h3>
+        <p id="testimonials-desc">Taking your medication on time is a habit that can change your life. We're here to help you build that consistency, one reminder at a time.</p>
+        <div id="testimonials-wrapper">
+            <div class="testimonial-item">
+                <img src="https://images.pexels.com/photos/33623162/pexels-photo-33623162.jpeg" />
+                <p class="testimonial-message">This website has been a lifesaver...</p>
+                <h3 class="testimonial-by">SARAH M.</h3>
+                <p class="job-role">Cook</p>
             </div>
-        </section>
-<!-- ========== TESTIMONIALS ========== -->
-
-        <section id="testimonials-section">
-            <h3>A Healthy Habit Starts Here</h3>
-            <p id="testimonials-desc">Taking your medication on time is a habit that can change your life. We're here to help you build that consistency, one reminder at a time.</p>
-
-            <div id="testimonials-wrapper">
-                <div class="testimonial-item">
-                    <img src="https://images.pexels.com/photos/33623162/pexels-photo-33623162.jpeg" />
-                    <p class="testimonial-message">This website has been a lifesaver. I used to forget my medications all the time, but the daily reminders have made it so easy to stay on track. The gamification is a great touch, too!</p>
-                    <h3 class="testimonial-by">SARAH M.</h3>
-                    <p class="job-role">Cook</p>
-                </div>
-                <div class="testimonial-item">
-                    <img src="https://images.pexels.com/photos/33622146/pexels-photo-33622146.jpeg" />
-                    <p class="testimonial-message">The online consultation service is fantastic. I got my questions answered by a professional pharmacist within minutes, and the free trial let me see how helpful it was before I even paid. Worth every penny.</p>
-                    <h3 class="testimonial-by">KEBEDE T.</h3>
-                    <p class="job-role">Seller</p>
-                </div>
-                <div class="testimonial-item">
-                    <img src="https://images.pexels.com/photos/4926674/pexels-photo-4926674.jpeg" />
-                    <p class="testimonial-message">I love the convenience of the online store. I can order my vitamins and supplements right from the app, and the smart pillbox is the perfect accessory. It has simplified my entire routine.</p>
-                    <h3 class="testimonial-by">MARIAH G.</h3>
-                    <p class="job-role">Teacher</p>
-                </div>
+            <div class="testimonial-item">
+                <img src="https://images.pexels.com/photos/33622146/pexels-photo-33622146.jpeg" />
+                <p class="testimonial-message">The online consultation service is fantastic...</p>
+                <h3 class="testimonial-by">KEBEDE T.</h3>
+                <p class="job-role">Seller</p>
             </div>
-        </section>
-        
-<!-- ========== VIDEO SECTION ========== -->
-        <section id="video-section">
+            <div class="testimonial-item">
+                <img src="https://images.pexels.com/photos/4926674/pexels-photo-4926674.jpeg" />
+                <p class="testimonial-message">I love the convenience of the online store...</p>
+                <h3 class="testimonial-by">MARIAH G.</h3>
+                <p class="job-role">Teacher</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== VIDEO SECTION ========== -->
+    <section id="video-section">
+        <div>
+            <h3>Demo Video On How to Use Our Website</h3>
+            <div id="line-separator"></div>
+            <video src=""></video>
+        </div>
+    </section>
+
+    <!-- ========== CONTACT SECTION ========== -->
+    <section id="address-section">
+        <div id="address-wrapper">
             <div>
-                <h3>Demo Video On How to Use Our Website</h3>
-                <div id="line-separator"></div>
-
-                <video src=""></video>
+                <p class="green-heading">Contact Us</p>
+                <h3 class="section-heading">Address Information</h3>
+                <p class="section-description">Not taking Meds on time is one of the problems that lead to other complications</p>
+                <h4 class="address-heading">Addis Ababa Store</h4>
+                <p class="address-lines">
+                    Eliana Building E<br>6th floor Addis<br>Monday to Friday : 9am to 8pm<br>natim7520@gmail.com
+                </p>
+                <section id="contact" style="padding: 40px 20px; background: #f5f5f5; text-align: center; border-radius: 12px; margin-top: 40px;">
+                    <h2>Contact Me</h2>
+                    <p>Let's connect! Reach out through any of the platforms below:</p>
+                    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
+                        <a href="tel:+251982404998" target="_blank" class="contact-link"><i class="fas fa-phone"></i> +251 982 404 998</a>
+                        <a href="mailto:natim7520@gmail.com" target="_blank" class="contact-link"><i class="fas fa-envelope"></i> natim7520@gmail.com</a>
+                        <a href="https://www.linkedin.com/in/robel-biruk-5923101b5" target="_blank" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                        <a href="https://github.com/Robibiruk" target="_blank" class="contact-link"><i class="fab fa-github"></i> GitHub</a>
+                    </div>
+                </section>
             </div>
-        </section>
-<!-- ========== CONTACT SECTION ========== -->
-        <section id="address-section">
-            <div id="address-wrapper">
-                <div>
-                    <p class="green-heading">Contact Us</p>
-                    <h3 class="section-heading">Address Information</h3>
-                    <p class="section-description">Not taking Meds on time is one of the problems that lead to other complications</p>
 
-                    <h4 class="address-heading">Addis Ababa Store</h4>
-                    <p class="address-lines">
-                        Eliana Building E<br>6th floor Addis<br>Monday to Friday : 9am to 8pm<br>natim7520@gmail.com</p>
-
-                    <!-- Contact Section -->
-<section id="contact" style="padding: 40px 20px; background: #f5f5f5; text-align: center; border-radius: 12px; margin-top: 40px;">
-    <h2>Contact Me</h2>
-    <p>Let's connect! Reach out through any of the platforms below:</p>
-    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
-        <a href="tel:+251982404998" target="_blank" class="contact-link">
-            <i class="fas fa-phone"></i> +251 982 404 998
-        </a>
-        <a href="mailto:natim7520@gmail.com" target="_blank" class="contact-link">
-            <i class="fas fa-envelope"></i> natim7520@gmail.com
-        </a>
-        <a href="https://www.linkedin.com/in/robel-biruk-5923101b5" target="_blank" class="contact-link">
-            <i class="fab fa-linkedin"></i> LinkedIn
-        </a>
-        <a href="https://github.com/Robibiruk" target="_blank" class="contact-link">
-            <i class="fab fa-github"></i> GitHub
-        </a>
-    </div>
-</section>
-
-                </div>
-                
-                <div>
-                    <p class="green-heading">Meet Our Team</p>
-                    <h3 class="section-heading">Get In Touch</h3>
-                    <p class="section-description">It's Our Main Priority to Remind you to take Your Meds on Time.</p>
-
-                    <form>
-                        <input class="input-box" type="text" name="name" placeholder="Name" />
-                        <input class="input-box" type="text" name="phone" placeholder="Phone" />
-                        <input class="input-box" type="text" name="subject" placeholder="Subject" />
-                        <input class="input-box" type="email" name="email" placeholder="E-mail" />
-                        <textarea class="input-box">Message</textarea>
-                        <input id="btn-submit" class="primary-button" type="submit" value="Submit Now">
-                    </form>
-                </div>
+            <div>
+                <p class="green-heading">Meet Our Team</p>
+                <h3 class="section-heading">Get In Touch</h3>
+                <p class="section-description">It's Our Main Priority to Remind you to take Your Meds on Time.</p>
+                <form>
+                    <input class="input-box" type="text" name="name" placeholder="Name" />
+                    <input class="input-box" type="text" name="phone" placeholder="Phone" />
+                    <input class="input-box" type="text" name="subject" placeholder="Subject" />
+                    <input class="input-box" type="email" name="email" placeholder="E-mail" />
+                    <textarea class="input-box">Message</textarea>
+                    <input id="btn-submit" class="primary-button" type="submit" value="Submit Now">
+                </form>
             </div>
-        </section>
-    </main>
-<!-- ========== FOOTER ========== -->
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
     <footer>© Copyright 2018 Mobirise - All Rights Reserved</footer>
-</body>
-</html>
-   
+
+    <!-- JS (external only; no inline) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

@@ -1,282 +1,328 @@
-// app.js
-// Ask for notification permission ONCE when page loads
-if ("Notification" in window && Notification.permission !== "granted") {
-    Notification.requestPermission();
+// ===== Imports (Firebase v12) =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-firestore.js";
+
+// ===== Global State =====
+let APP_ID = "meditrack";
+let FIREBASE_CONFIG = null;
+let db, auth, userId, remindersCollectionRef;
+let totalReminders = 0, completedReminders = 0;
+let reminderChart, trendChart;
+
+// ===== DOM =====
+const chatInput = document.getElementById('chat-input');
+const chatLog = document.getElementById('chat-log');
+const chatSendBtn = document.getElementById('chat-send');
+const medicineInput = document.getElementById('medicine-input');
+const medicineBtn = document.getElementById('medicine-btn');
+const medicineResult = document.getElementById('medicine-result');
+const remindersList = document.getElementById('reminders');
+const medForm = document.getElementById('med-form');
+const pointsElement = document.getElementById('points');
+const progressBar = document.getElementById('progress-bar');
+const newMedicinesContainer = document.getElementById('new-medicines'); // NEW ELEMENT
+
+// ===== Helpers =====
+function displayMessage(message, sender) {
+    const msg = document.createElement('div');
+    msg.classList.add('message', sender);
+    msg.innerHTML = `<p>${message}</p>`;
+    chatLog.appendChild(msg);
+    chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-let totalReminders = 0;
-let completedReminders = 0;
-let reminderChart; // donut
-let trendChart;    // line chart
-
-// Track completions per day
-let dailyStats = {}; // { "2025-08-26": 3, "2025-08-27": 5, ... }
-
-/* ================= UPDATE PROGRESS + CHARTS ================= */
-function updateProgress() {
-    const progress = totalReminders === 0 ? 0 : (completedReminders / totalReminders) * 100;
-    document.getElementById("progress-bar").style.width = progress + "%";
-    document.getElementById("points").textContent = completedReminders * 10; // 10 points per completion
-    updateDonutChart();
-    updateTrendChart();
+function showModal(msg, cb=null) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `<div class="modal-content">
+        <p>${msg}</p>
+        <div class="modal-buttons">
+            <button id="modal-ok">OK</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('modal-ok').addEventListener('click', () => { modal.remove(); if(cb) cb(); });
 }
 
-/* ================== CHART.JS - DONUT ================== */
-function updateDonutChart() {
-    const ctx = document.getElementById("reminderChart");
-    if (!ctx) return;
+// ===== Firebase Init =====
+async function bootstrap() {
+    try {
+        const res = await fetch('/config');
+        const cfg = await res.json();
+        FIREBASE_CONFIG = cfg.firebase_config;
+        APP_ID = cfg.app_id || APP_ID;
 
-    if (reminderChart) reminderChart.destroy();
+        const app = initializeApp(FIREBASE_CONFIG);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        await signInAnonymously(auth);
+        userId = auth.currentUser?.uid;
 
-    reminderChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: ["Completed", "Remaining"],
-            datasets: [{
-                data: [completedReminders, totalReminders - completedReminders],
-                backgroundColor: ["#2c786c", "#e0e0e0"],
-                borderWidth: 1
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
-    });
-}
-
-/* ================== CHART.JS - TREND LINE ================== */
-function updateTrendChart() {
-    const ctx = document.getElementById("trendChart");
-    if (!ctx) return;
-
-    if (trendChart) trendChart.destroy();
-
-    const labels = Object.keys(dailyStats).sort(); // date labels
-    const values = labels.map(d => dailyStats[d]);
-
-    trendChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels,
-            datasets: [{
-                label: "Daily Completed Reminders",
-                data: values,
-                fill: false,
-                borderColor: "#2c786c",
-                tension: 0.2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: "top" } },
-            scales: {
-                y: { beginAtZero: true }
-            }
+        if (!userId) { 
+            remindersList.innerHTML = "<li>Authentication failed</li>"; 
+            return; 
         }
-    });
-}
 
-/* ================== REMINDER LOGIC ================== */
-// New function to create a reminder list item
-function createReminderListItem(reminder) {
-    const li = document.createElement("li");
-    li.dataset.id = reminder.id; // Store the reminder ID
-    li.innerHTML = `
-        <span>${reminder.name} - Take <strong>${reminder.medication}</strong> at <em>${reminder.time}</em></span>
-        <label style="margin-left:10px;">
-            <input type="checkbox" class="taken-checkbox"> Taken
-        </label>
-        <button class="delete-btn">❌</button>
-    `;
+        remindersCollectionRef = collection(db, `apps/${APP_ID}/users/${userId}/reminders`);
+        listenForReminders();
 
-    // Update UI based on saved status
-    const checkbox = li.querySelector(".taken-checkbox");
-    if (reminder.is_taken) {
-        checkbox.checked = true;
-        li.style.textDecoration = "line-through";
-        li.style.opacity = "0.6";
-        completedReminders++;
-    }
+        if("Notification" in window && Notification.permission!=="granted") Notification.requestPermission();
+        setInterval(checkDueReminders, 10000);
 
-    // Checkbox functionality
-    checkbox.addEventListener("change", function () {
-        const isChecked = this.checked;
-        if (isChecked) {
-            li.style.textDecoration = "line-through";
-            li.style.opacity = "0.6";
-            completedReminders++;
-            const today = new Date().toISOString().split("T")[0];
-            dailyStats[today] = (dailyStats[today] || 0) + 1;
-        } else {
-            li.style.textDecoration = "none";
-            li.style.opacity = "1";
-            completedReminders--;
-            const today = new Date().toISOString().split("T")[0];
-            dailyStats[today] = Math.max(0, (dailyStats[today] || 0) - 1);
-        }
-        updateProgress();
-
-        // Send the updated status to the backend
-        fetch("/update_status", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: reminder.id, is_taken: isChecked ? 1 : 0 })
+        // ===== Initialize Charts =====
+        const reminderCtx = document.getElementById('reminderChart').getContext('2d');
+        reminderChart = new Chart(reminderCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Taken', 'Missed'],
+                datasets: [{
+                    label: 'Reminders',
+                    data: [completedReminders, totalReminders - completedReminders],
+                    backgroundColor: ['#2c786c', '#e74c3c']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
         });
-    });
 
-    // Delete button functionality
-    const deleteBtn = li.querySelector(".delete-btn");
-    deleteBtn.addEventListener("click", function () {
-        // TODO: Also needs to delete from the database
-        if (checkbox.checked) {
-            completedReminders--;
-            const today = new Date().toISOString().split("T")[0];
-            dailyStats[today] = Math.max(0, (dailyStats[today] || 0) - 1);
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Reminders Completed',
+                    data: [0,0,0,0,0,0,0],
+                    borderColor: '#2c786c',
+                    backgroundColor: 'rgba(44,120,108,0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // ===== Fetch New Medicines on Bootstrap =====
+        fetchNewMedicines();
+
+    } catch(e) {
+        console.error("Bootstrap error:", e);
+    }
+}
+
+// ===== Fetch Latest Medicines =====
+async function fetchNewMedicines(limit=5) {
+    if (!newMedicinesContainer) return;
+    newMedicinesContainer.innerHTML = "<p class='text-gray-500'>Loading latest medicines...</p>";
+
+    try {
+        const res = await fetch(`/new_medicines?limit=${limit}`);
+        const data = await res.json();
+
+        if (data.medicines && data.medicines.length) {
+            newMedicinesContainer.innerHTML = '';
+            data.medicines.forEach(med => {
+                const div = document.createElement('div');
+                div.className = 'medicine-item';
+                div.innerHTML = `<strong>${med.name}</strong> (${med.category})<br>${med.description}`;
+                newMedicinesContainer.appendChild(div);
+            });
+        } else {
+            newMedicinesContainer.innerHTML = "<p>No new medicines found.</p>";
         }
-        totalReminders--;
-        li.remove();
+    } catch (e) {
+        newMedicinesContainer.innerHTML = "<p>Error fetching new medicines.</p>";
+        console.error("Fetch new medicines error:", e);
+    }
+}
+
+// ===== Firestore CRUD =====
+async function addReminder(data){ 
+    try{ await addDoc(remindersCollectionRef,data);} 
+    catch(e){showModal("Error saving reminder");} 
+}
+async function deleteReminder(id){ 
+    try{ await deleteDoc(doc(db, remindersCollectionRef.path, id));} 
+    catch(e){showModal("Error deleting reminder");} 
+}
+async function updateReminderStatus(id,status){ 
+    try{ await updateDoc(doc(db, remindersCollectionRef.path,id), {is_taken:status});} 
+    catch(e){} 
+}
+
+// ===== Reminder Listener =====
+function listenForReminders(){
+    onSnapshot(remindersCollectionRef, snapshot=>{
+        remindersList.innerHTML=''; totalReminders=snapshot.docs.length; completedReminders=0;
+        snapshot.forEach(d=>{
+            const r={...d.data(), id:d.id};
+            const li=createReminderListItem(r);
+            remindersList.appendChild(li);
+        });
         updateProgress();
+    },err=>{
+        console.error(err); 
+        remindersList.innerHTML="<li>Could not fetch reminders</li>";
     });
-
-    return li; // Return the created list item
 }
 
-// New function to load reminders from the database
-function loadReminders() {
-    fetch("/get_reminders")
-        .then(res => res.json())
-        .then(reminders => {
-            // ✅ FIX: Check if "reminders" is a valid array before trying to loop
-            if (Array.isArray(reminders)) {
-                totalReminders = reminders.length;
-                reminders.forEach(reminder => {
-                    const li = createReminderListItem(reminder);
-                    document.getElementById("reminders").appendChild(li);
-                });
-                updateProgress();
-            } else {
-                console.error("Received invalid data:", reminders);
-            }
-        })
-        .catch(err => console.error("Error loading reminders:", err));
+// ===== Reminder UI =====
+function createReminderListItem(reminder){
+    const li=document.createElement('li'); li.dataset.id=reminder.id; li.className='reminder-item';
+    li.innerHTML = `<span><strong>${reminder.name}</strong> - Take <strong>${reminder.medication}</strong> at <em>${reminder.time}</em></span>
+        <div class="reminder-actions">
+            <input type="checkbox" class="taken-checkbox" data-id="${reminder.id}" ${reminder.is_taken?'checked':''}>
+            <button class="delete-btn">❌</button>
+        </div>`;
+    if(reminder.is_taken){ li.style.textDecoration="line-through"; li.style.opacity="0.6"; completedReminders++; }
+    return li;
 }
 
-document.getElementById("med-form").addEventListener("submit", function (e) {
+// ===== Reminder Notifications =====
+function checkDueReminders(){
+    if(!remindersCollectionRef) return;
+    const now=new Date();
+    const currentTime=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    getDocs(remindersCollectionRef).then(snapshot=>{
+        snapshot.forEach(d=>{
+            const r=d.data();
+            if(r.time===currentTime && !r.is_taken){ playAlarmAndNotify({...r,id:d.id}); }
+        });
+    }).catch(err=>console.error(err));
+}
+
+function playAlarmAndNotify(reminder){
+    try{ new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg").play().catch(()=>{});}catch(e){}
+    if("Notification" in window && Notification.permission==="granted"){
+        const n=new Notification("⏰ Medication Reminder",{body:`Time to take ${reminder.medication} — ${reminder.name}`,tag:`reminder-${reminder.id}`,renotify:true});
+        n.onclick=()=>{window.focus(); highlightReminder(reminder.id);}
+        return;
+    }
+    showReminderPopup(reminder);
+}
+
+function highlightReminder(id){
+    const el=document.querySelector(`li[data-id="${id}"]`);
+    if(!el) return; el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.style.boxShadow='0 6px 18px rgba(44,120,108,0.18)'; el.style.transform='scale(1.01)';
+    setTimeout(()=>{el.style.boxShadow=''; el.style.transform='';},1200);
+}
+
+function showReminderPopup(reminder){
+    const existing=document.getElementById('reminder-popup'); if(existing) existing.remove();
+    const popup=document.createElement('div'); popup.id='reminder-popup'; popup.className='reminder-popup';
+    popup.innerHTML=`<div class="popup-left"><strong>⏰ Reminder</strong><div class="popup-msg">Time to take <em>${reminder.medication}</em> — ${reminder.name}</div></div>
+    <div class="popup-actions">
+        <button class="popup-btn popup-taken">Mark taken</button>
+        <button class="popup-btn popup-dismiss">Dismiss</button>
+    </div>`;
+    (document.getElementById('reminders')?.parentElement||document.body).appendChild(popup);
+
+    popup.querySelector('.popup-taken').addEventListener('click',async()=>{
+        await updateReminderStatus(reminder.id,true); popup.remove(); highlightReminder(reminder.id); showModal("Marked as taken ✅");
+    });
+    popup.querySelector('.popup-dismiss').addEventListener('click',()=>popup.remove());
+    setTimeout(()=>{const p=document.getElementById('reminder-popup');if(p)p.remove();},45000);
+}
+
+// ===== Progress =====
+function updateProgress() {
+    const pct = totalReminders ? Math.round((completedReminders / totalReminders) * 100) : 0;
+    progressBar.style.width = `${pct}%`;
+    pointsElement.textContent = completedReminders * 10;
+
+    if(reminderChart){
+        reminderChart.data.datasets[0].data = [completedReminders, totalReminders - completedReminders];
+        reminderChart.update();
+    }
+
+    if(trendChart){
+        const todayIndex = (new Date().getDay()+6)%7; // Mon=0
+        trendChart.data.datasets[0].data[todayIndex] = completedReminders;
+        trendChart.update();
+    }
+}
+
+// ===== Form submit =====
+medForm.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    const data={
+        name: medForm.name.value.trim(),
+        medication: medForm.medication.value.trim(),
+        time: medForm.time.value,
+        phone: medForm.phone.value,
+        sms: medForm['sms-toggle'].checked,
+        is_taken:false,
+        timestamp: serverTimestamp()
+    };
+    await addReminder(data);
+    medForm.reset();
+});
 
-    const name = document.getElementById("name").value.trim();
-    const medication = document.getElementById("medication").value.trim();
-    const time = document.getElementById("time").value;
-    const phone = document.getElementById("phone") ? document.getElementById("phone").value.trim() : "";
-    const smsToggle = document.getElementById("sms-toggle") ? document.getElementById("sms-toggle").checked : false;
-
-    if (!name || !medication || !time) return;
-
-    // Send reminder to backend to save it
-    fetch("/add_reminder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, medication, time })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "success") {
-            totalReminders++;
-            const newReminder = { id: data.id, name, medication, time, is_taken: 0 };
-            const li = createReminderListItem(newReminder); // Create the list item
-            document.getElementById("reminders").appendChild(li); // ✅ FIX: Append it to the list
-            updateProgress();
-        }
-    })
-    .catch(err => console.error("Error saving reminder:", err));
-
-    // If SMS toggle ON and phone number provided -> send SMS
-    if (smsToggle && phone) {
-        fetch("/send_sms", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                phone,
-                message: `⏰ Reminder: ${name}, time to take your ${medication} at ${time}.`
-            })
-        })
-        .then(res => res.json())
-        .then(data => console.log("SMS status:", data))
-        .catch(err => console.error("Error sending SMS:", err));
+// ===== Checkbox / delete events =====
+remindersList.addEventListener('change', async(e)=>{
+    if(e.target.classList.contains('taken-checkbox')){
+        const id=e.target.dataset.id; const status=e.target.checked;
+        await updateReminderStatus(id,status); updateProgress();
     }
-
-    // Alarm sound & alert logic
-    const alarmSound = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
-    const now = new Date();
-    const reminderTime = new Date();
-    const [hours, minutes] = time.split(":");
-    reminderTime.setHours(hours, minutes, 0, 0);
-    const delay = reminderTime - now;
-
-    if (delay > 0) {
-        setTimeout(() => {
-            alarmSound.play();
-            const confirmed = confirm(`⏰ Reminder: ${name}, time to take your ${medication}!\nClick OK if you've taken it.`);
-            if (confirmed) {
-                const li = document.querySelector(`li > span:contains('${name} - Take ${medication} at ${time}')`).parentNode;
-                const checkbox = li.querySelector(".taken-checkbox");
-                checkbox.checked = true;
-                checkbox.dispatchEvent(new Event('change'));
-            }
-        }, delay);
+});
+remindersList.addEventListener('click', async(e)=>{
+    if(e.target.classList.contains('delete-btn')){
+        const li=e.target.closest('li'); await deleteReminder(li.dataset.id);
     }
 });
 
-/* ================= CHATBOT LOGIC ================= */
-document.getElementById("chat-send").addEventListener("click", sendMessage);
-
-function sendMessage() {
-    const input = document.getElementById("chat-input");
-    const message = input.value.trim();
-    if (!message) return;
-
-    const log = document.getElementById("chat-log");
-
-    // User message
-    log.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
-    input.value = "";
-
-    // Send to backend chatbot
-    fetch("/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-    })
-    .then(res => res.json())
-    .then(data => {
-        log.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
-        log.scrollTop = log.scrollHeight;
-    });
+// ===== Chatbot (Premium Message) =====
+chatSendBtn.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+function sendChat() {
+    const q = chatInput.value.trim(); 
+    if (!q) return;
+    displayMessage(q, 'user'); 
+    chatInput.value = '';
+    displayMessage("🤖 Pay the premium to get access to 24/7 AI consulting.", 'bot');
 }
 
-/* ================= MEDICINE SEARCH ================= */
-document.getElementById("medicine-btn").addEventListener("click", () => {
-    const medicine = document.getElementById("medicine-input").value.trim();
-    if (!medicine) return;
+// ===== Medicine Info Lookup =====
+function markdownToHtml(text) {
+    let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\n\n/g, '<br><br>');
+    return html;
+}
 
-    document.getElementById("medicine-result").innerHTML = "Searching... ⏳";
+medicineBtn.addEventListener('click', async () => {
+    const med = medicineInput.value.trim();
+    if (!med) {
+        medicineResult.textContent = 'Please enter a medicine name.';
+        return;
+    }
+    medicineResult.innerHTML = '<span class="text-gray-500">Searching...</span>';
 
-    fetch("/medicine_search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ medicine })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("medicine-result").innerHTML = `
-            <strong>${medicine}</strong><br>
-            ${data.info || "No information found."}
-        `;
-    })
-    .catch(err => {
-        document.getElementById("medicine-result").innerHTML = "⚠️ Error fetching info.";
-        console.error(err);
-    });
+    try {
+        // Use relative path to your Flask backend
+        const res = await fetch(`/medicine_lookup?q=${encodeURIComponent(med)}`);
+        const data = await res.json();
+
+        if (data.answer) {
+            medicineResult.innerHTML = markdownToHtml(data.answer);
+        } else if (data.error) {
+            medicineResult.textContent = 'Error: ' + data.error;
+        } else {
+            medicineResult.textContent = 'An unexpected error occurred.';
+        }
+    } catch (e) {
+        medicineResult.textContent = 'Error fetching medicine info. Please check your network connection.';
+        console.error("Medicine lookup error:", e);
+    }
 });
 
-// Load reminders when the page content is fully loaded
-document.addEventListener("DOMContentLoaded", loadReminders);
+// ===== Contact Form =====
+const contactForm = document.getElementById("contact-form");
+contactForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("Message submitted successfully!");
+    contactForm.reset();
+});
+
+// ===== Bootstrap =====
+bootstrap();

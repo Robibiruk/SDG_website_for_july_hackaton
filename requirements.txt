@@ -1,2 +1,5 @@
 Flask
 gunicorn
+requests
+firebase-admin
+google-generativeai
