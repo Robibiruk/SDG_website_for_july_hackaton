@@ -1,5 +1,4 @@
-Flask
-gunicorn
-requests
-firebase-admin
-google-generativeai
+Flask>=2.3.2,<3
+gunicorn>=21.2.0,<22
+requests>=2.31.0,<3
+firebase-admin>=7.7.0,<8
