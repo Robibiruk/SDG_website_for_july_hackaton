@@ -1,6 +1,3 @@
 # Ignore Firebase key (secret)
 firebase-key.json
 
-# Ignore SQL dump files
-*.sqlite.sql
-
