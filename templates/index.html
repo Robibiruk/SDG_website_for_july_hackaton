@@ -6,9 +6,11 @@
     <title>Community Pharmacy Reminder</title>
 
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Caveat:400,700&subset=cyrillic" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap">
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -24,12 +26,21 @@
                 <a href="#analytics" class="menu-item">Analytics</a>
                 <a href="#video-section" class="menu-item">Demo Video</a>
                 <a href="#address-section" class="menu-item">Contact</a>
-                <button class="primary-button">Subscribe</button>
+                <!-- ✅ Paga Payment Form (Subscription Button) -->
+            <form method="POST" action="https://mypaga.com/pay" target="_blank" style="display:inline;">
+                    <input type="hidden" name="amount" value="100"> <!-- NGN -->
+                    <input type="hidden" name="currency" value="NGN">
+                    <input type="hidden" name="merchantId" value="YOUR_MERCHANT_ID"> <!-- replace -->
+                    <input type="hidden" name="referenceNumber" value="txn_nav_12345">
+                    <input type="hidden" name="redirectUrl" value="https://yourwebsite.com/payment-success">
+                    <button type="submit" class="primary-button">Subscribe <i class="fa-solid fa-web-awesome"></i></button>
+                </form>
             </div>
         </nav>
         <section id="landing-section">
             <div id="main-text-wrapper">
                 <h1>Robel's Community Pharmacy Reminder System</h1>
+                <h1>MEDITRACK</h1>
                 <p>Helping you stay on track with your medications</p>
             </div>
         </section>
@@ -69,31 +80,57 @@
     </section>
 
     <!-- CHATBOT + MEDICINE SEARCH -->
-    <section id="assistant-section">
-        <h2 id="Chatbot-title">💬 AI Chatbot & Medicine Search</h2>
-        <div id="assistant-wrapper">
-            <section id="chatbot-section">
-                <div id="chatbox">
-                    <h2>Your Personal Health Assistant</h2>
-                    <div id="chat-log"></div>
-                    <div id="chat-input-container">
-                        <input type="text" id="chat-input" placeholder="Ask me anything...">
-                        <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
-                        <br>
-                        <button id="subscribe-chat" class="primary-button" style="margin-top:12px;">
-                            Get 24/7 Consulting — $9.99
-                        </button>
+    <div class="bot-medicine-container">
+    <div id="chatbot-section">
+            <h2>
+                MediTrack BOT AI <span id="premium-status" class="hidden premium-badge">Premium</span>
+            </h2>
+            <p>Your personal AI medical assistant.</p>
+            
+            <div id="chatbox">
+                <div id="chat-log">
+                        Hello! I'm MediTrack AI BOT. How can I help you today?
                     </div>
                 </div>
-            </section>
-            <div id="medicine-search">
-                <h3>🔎 Medicine Info</h3>
-                <input id="medicine-input" type="text" placeholder="Enter medicine name..." />
-                <button id="medicine-btn">Search</button>
-                <div id="medicine-result"></div>
+                <div id="chat-input-container" class="chat-input-container">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Type your message...">
+                    <button id="chat-send" class="chat-send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
+
+            <form method="POST" action="https://mypaga.com/pay" target="_blank">
+  <!-- REQUIRED fields -->
+  <input type="hidden" name="amount" value="100"> <!-- amount in NGN -->
+  <input type="hidden" name="currency" value="NGN">
+  <input type="hidden" name="merchantId" value="YOUR_MERCHANT_ID"> <!-- replace -->
+  <input type="hidden" name="referenceNumber" value="txn_12345"> <!-- unique txn id -->
+  <input type="hidden" name="redirectUrl" value="https://yourwebsite.com/payment-success">
+
+  <button type="submit" class="get-premium-btn">Get Premium <i class="fa-solid fa-web-awesome"></i></button>
+</form>
         </div>
-    </section>
+
+        <!-- Medicine Search Section -->
+        <div id="medicine-search">
+            <h2>
+                Medicine Search
+            </h2>
+            <p>Search for information about any medicine.</p>
+                <input type="text" id="medicine-input" class="medicine-input" placeholder="e.g.Ibuprofen">
+                <button id="medicine-btn" class="medicine-btn">
+                    Search <i class="fas fa-search ml-2"></i>
+                </button>
+            </div>
+            
+            <div id="medicine-result"></div>
+            <div id="medicine-loader"></div>
+
+        </div>
+    </div>
+    </div>
+
 
     <!-- ANALYTICS -->
     <section id="analytics">
@@ -134,27 +171,35 @@
     </section>
 
     <section id="store-section">
-        <p class="green-heading">Online Pharmacy</p>
-        <h3>Your Health is Our Priority</h3>
-        <p class="section-description">Shop for a wide range of health products delivered right to your door.</p>
-        <div id="store-items-wrapper" class="product-grid">
-            <div class="store-item product-card">
-                <div class="icon-wrapper"><i class="fa-solid fa-tablets"></i></div>
-                <h3>Vitamins & Supplements</h3>
-                <p>Support your health goals with our high-quality vitamins and supplements.</p>
-            </div>
-            <div class="store-item product-card">
-                <div class="icon-wrapper"><i class="fa-solid fa-box"></i></div>
-                <h3>Smart Pillboxes</h3>
-                <p>Never miss a dose with smart pillboxes that connect directly to our app.</p>
-            </div>
-            <div class="store-item product-card">
-                <div class="icon-wrapper"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
-                <h3>OTC Drugs</h3>
-                <p>Conveniently order over-the-counter medication for common ailments.</p>
-            </div>
-        </div>
-    </section>
+  <p class="green-heading">Online Pharmacy</p>
+  <h3>Your Health is Our Priority</h3>
+  <p class="section-description">Shop for a wide range of health products delivered right to your door.</p>
+
+  <!-- Vitamins & Supplements -->
+  <div class="store-item-large-1">
+    <div class="icon-wrapper"><i class="fa-solid fa-tablets fa-2x"></i></div>
+    <h3>Vitamins & Supplements</h3>
+    <p>Support your health goals with our high-quality vitamins and supplements.</p>
+    <button class="order-btn" onclick="payWithPaga('Vitamins', 500)">Order Now</button>
+  </div>
+
+  <!-- Smart Pillboxes -->
+  <div class="store-item-large-2">
+    <div class="icon-wrapper"><i class="fa-solid fa-box fa-2x"></i></div>
+    <h3>Smart Pillboxes</h3>
+    <p>Never miss a dose with smart pillboxes that connect directly to our app.</p>
+    <button class="order-btn" onclick="payWithPaga('Smart Pillbox', 1200)">Order Now</button>
+  </div>
+
+  <!-- OTC Drugs -->
+  <div class="store-item-large-3">
+    <<div class="icon-wrapper"><i class="fa-solid fa-capsules fa-2x"></i></div>
+    <h3 class="store-item-3-h3">OTC Drugs</h3>
+    <p class="store-item-3-p">Conveniently order over-the-counter medication for common ailments.</p>
+    <button class="order-btn" onclick="payWithPaga('OTC Drugs', 800)">Order Now</button>
+  </div>
+</section>
+
 
     <!-- ========== SUBSCRIPTION SECTION ========== -->
     <section id="subscription-section">
@@ -164,8 +209,15 @@
             <div class="price-box">
                 <span class="price">$9.99</span><span class="per-month">/month</span>
             </div>
-            <p class="trial-text">1-month free trial included</p>
-            <button class="primary-button subscribe-btn">Start Free Trial</button>
+            <!-- ✅ Paga Payment Form (Subscription Button) -->
+            <form method="POST" action="https://mypaga.com/pay" target="_blank">
+                <input type="hidden" name="amount" value="100">
+                <input type="hidden" name="currency" value="NGN">
+                <input type="hidden" name="merchantId" value="YOUR_MERCHANT_ID">
+                <input type="hidden" name="referenceNumber" value="txn_sub_12345">
+                <input type="hidden" name="redirectUrl" value="https://yourwebsite.com/payment-success">
+                <button type="submit" class="primary-button subscribe-btn">Get Premium <i class="fa-solid fa-web-awesome"></i></button>
+            </form>
         </div>
     </section>
 
@@ -210,14 +262,35 @@
         </div>
     </section>
 
+     <!-- ========== PITCH DECK SECTION ========== -->
+<section id="pitch-deck">
+    <h2>MediTrack Pitch Deck</h2>
+    <p>Explore our platform and discover how MediTrack is revolutionizing medication management.</p>
+    <iframe src="https://gamma.app/embed/qz5gnslmowefqkb" 
+            allow="fullscreen" 
+            title="MediTrack: Your Partner in Health">
+    </iframe>
+</section>
+
+
     <!-- ========== VIDEO SECTION ========== -->
     <section id="video-section">
-        <div>
-            <h3>Demo Video On How to Use Our Website</h3>
-            <div id="line-separator"></div>
-            <video src=""></video>
-        </div>
-    </section>
+
+
+    <!-- ========== VIDEO SECTION ========== -->
+<section id="video-section">
+    <h2 class="section-heading">🎥 Demo Video</h2>
+    <p class="section-description">Watch this short demo to learn how to use MediTrack effectively.</p>
+    <div class="video-wrapper">
+        <iframe src="https://player.vimeo.com/video/1114620489?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
+            frameborder="0" 
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            title="Demo video on how to use our website">
+        </iframe>
+    </div>
+</section>
+
 
     <!-- ========== CONTACT SECTION ========== -->
     <section id="address-section">

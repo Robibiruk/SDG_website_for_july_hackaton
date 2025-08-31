@@ -22,6 +22,7 @@ const medForm = document.getElementById('med-form');
 const pointsElement = document.getElementById('points');
 const progressBar = document.getElementById('progress-bar');
 const newMedicinesContainer = document.getElementById('new-medicines'); // NEW ELEMENT
+const freeTrialBtn = document.getElementById('free-trial'); // ===== Free Trial Button =====
 
 // ===== Helpers =====
 function displayMessage(message, sender) {
@@ -323,6 +324,13 @@ contactForm?.addEventListener("submit", (e) => {
     alert("Message submitted successfully!");
     contactForm.reset();
 });
+
+// Paga payment integration (simplified)
+  function payWithPaga(itemName, amount) {
+    alert("Redirecting to Paga payment for " + itemName + " (₦" + amount + ")");
+    // Example redirect - replace with real Paga Collect URL
+    window.location.href = "https://mypaga.com/paga-webservices/rest/express-checkout?amount=" + amount + "&item=" + encodeURIComponent(itemName);
+  }
 
 // ===== Bootstrap =====
 bootstrap();

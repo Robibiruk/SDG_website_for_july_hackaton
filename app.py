@@ -1,27 +1,27 @@
 import os
 import json
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 import requests
-import sqlite3  # Added for local database access
+import sqlite3  # Local database
 from firebase_admin import credentials, initialize_app
 
 app = Flask(__name__)
 
-# ---- App ID (used in Firestore path) ----
+# ---- App ID ----
 APP_ID = os.getenv("APP_ID", "meditrack")
 
-# ---- Firebase Web Config (safe to expose in frontend) ----
+# ---- Firebase Config ----
 FIREBASE_CONFIG = {
     "apiKey": os.getenv("FIREBASE_API_KEY", "AIzaSyAO8ScbDEtVlhzlyyw-FNQJSDcufFeM4Lc"),
     "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN", "meditrack-2bff4.firebaseapp.com"),
     "projectId": os.getenv("FIREBASE_PROJECT_ID", "meditrack-2bff4"),
-    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET", "meditrack-2bff4.firebasestorage.app"),
+    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET", "meditrack-2bff4.appspot.com"),
     "messagingSenderId": os.getenv("FIREBASE_SENDER_ID", "41886528481"),
     "appId": os.getenv("FIREBASE_APP_ID", "1:41886528481:web:7e0c8f99cef6d9266518a0"),
     "measurementId": os.getenv("FIREBASE_MEASUREMENT_ID", "G-JVP5PM8J4N"),
 }
 
-# ---- Firebase Admin Initialization (uses JSON in ENV var) ----
+# ---- Firebase Admin ----
 firebase_key_json = os.getenv("FIREBASE_KEY_JSON")
 if firebase_key_json:
     try:
@@ -31,18 +31,20 @@ if firebase_key_json:
     except Exception as e:
         print(f"⚠️ Firebase Admin init failed: {e}")
 else:
-    print("⚠️ No FIREBASE_KEY_JSON found in environment. Admin SDK not initialized.")
+    print("⚠️ No FIREBASE_KEY_JSON found. Admin SDK not initialized.")
 
-# ---- Gemini API Key (KEEP SECRET) ----
+# ---- Gemini API ----
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-# Quick test only (REMOVE in production):
-# GEMINI_API_KEY = "AIzaSyAgXp1rm13e28b---"
-
-# ---- Track messages per session (IP-based demo) ----
 user_message_count = {}
 MAX_MESSAGES = 5
 
-# ===== ROUTES =====
+# ---- Paga Collect Config ----
+PAGA_PRINCIPAL = os.getenv("PAGA_PRINCIPAL", "")
+PAGA_CREDENTIALS = os.getenv("PAGA_CREDENTIALS", "")
+PAGA_SECRET = os.getenv("PAGA_SECRET", "")
+PAGA_BASE_URL = "https://beta.mypaga.com/paga-webservices/oauth2"
+
+# ================= ROUTES ================= #
 
 @app.route("/")
 def index():
@@ -50,27 +52,24 @@ def index():
 
 @app.route("/config")
 def config():
-    """Frontend fetches this to initialize Firebase without inline JS."""
+    """Frontend fetches this to init Firebase without inline JS."""
     return jsonify({"app_id": APP_ID, "firebase_config": FIREBASE_CONFIG})
 
 @app.route("/ai")
 def ai_proxy():
-    """Demo-limited AI proxy to Gemini API."""
+    """AI proxy to Gemini API."""
     prompt = request.args.get("prompt", "")
     user_ip = request.remote_addr
     count = user_message_count.get(user_ip, 0)
 
     if count >= MAX_MESSAGES:
-        return jsonify({"response": f"⚠️ Demo limit reached. You can only send {MAX_MESSAGES} messages."})
+        return jsonify({"response": f"⚠️ Demo limit reached. Only {MAX_MESSAGES} messages allowed."})
 
     if not GEMINI_API_KEY:
-        return jsonify({"response": "Gemini API key missing on server."}), 500
+        return jsonify({"response": "Gemini API key missing"}), 500
 
     url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-    headers = {
-        "Content-Type": "application/json",
-        "X-goog-api-key": GEMINI_API_KEY,
-    }
+    headers = {"Content-Type": "application/json", "X-goog-api-key": GEMINI_API_KEY}
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
     try:
@@ -83,7 +82,7 @@ def ai_proxy():
     except Exception as e:
         return jsonify({"response": f"Error contacting Gemini: {e}"}), 502
 
-# ===== Medicine Info Search (Local SQLite DB) =====
+# ===== Medicine Lookup =====
 @app.route("/medicine_lookup")
 def medicine_lookup():
     query = request.args.get("q", "").strip().lower()
@@ -107,11 +106,55 @@ def medicine_lookup():
             answer = f"**{name}** ({category})\n\n{description}"
             return jsonify({"answer": answer})
         else:
-            return jsonify({"answer": "Sorry, no information found for this medicine."})
+            return jsonify({"answer": "No information found for this medicine."})
 
     except Exception as e:
         print(f"Error accessing local database: {e}")
-        return jsonify({"error": "An error occurred while fetching medicine information."}), 500
+        return jsonify({"error": "Database error"}), 500
+
+# ====== Paga Collect Integration ======
+@app.route("/pay", methods=["POST"])
+def paga_pay():
+    """Initialize payment via Paga Collect API."""
+    try:
+        amount = request.json.get("amount", "100")  # Default amount
+        currency = "NGN"
+
+        payload = {
+            "referenceNumber": "TXN" + os.urandom(4).hex(),
+            "amount": amount,
+            "currency": currency,
+            "payer": {"name": "Demo User", "phoneNumber": "08012345678"},
+            "expiryDateTimeUTC": "2030-01-01T00:00:00Z",
+            "callBackUrl": request.host_url + "pay/callback"
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+        # Get OAuth Token
+        token_url = f"{PAGA_BASE_URL}/token"
+        token_resp = requests.post(token_url, data={
+            "grant_type": "client_credentials",
+            "scope": "MERCHANT_API"
+        }, auth=(PAGA_PRINCIPAL, PAGA_CREDENTIALS))
+        token_resp.raise_for_status()
+        access_token = token_resp.json().get("access_token")
+
+        # Create Collect Payment
+        collect_url = "https://beta.mypaga.com/paga-webservices/business-rest/secured/collectPayment"
+        resp = requests.post(collect_url, headers={
+            **headers,
+            "Authorization": f"Bearer {access_token}"
+        }, json=payload)
+
+        resp.raise_for_status()
+        return jsonify(resp.json())
+
+    except Exception as e:
+        return jsonify({"error": f"Paga Collect failed: {e}"}), 500
 
 # ===== MAIN =====
 if __name__ == "__main__":
