@@ -1473,6 +1473,27 @@ body.dark-mode #contact a {
   transform: scale(1.05);
 }
 
+/* Dark Mode for Reminder Popup */
+body.dark-mode .reminder-popup {
+    background: linear-gradient(180deg, #1e1e1e, #2a2a2a);
+    border: 1px solid #444;
+    color: #f1f1f1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .reminder-popup .popup-msg {
+    color: #f1f1f1;
+}
+
+body.dark-mode .reminder-popup .popup-actions .popup-btn.popup-dismiss {
+    background: #555;
+    color: #fff;
+}
+
+body.dark-mode .reminder-popup .popup-actions .popup-btn.popup-snooze {
+    background: #ffb74d;
+    color: #111;
+}
 
 
 /* Fix Landing Page BG in Mobile */
