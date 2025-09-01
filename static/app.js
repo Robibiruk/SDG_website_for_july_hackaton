@@ -21,8 +21,9 @@ const remindersList = document.getElementById('reminders');
 const medForm = document.getElementById('med-form');
 const pointsElement = document.getElementById('points');
 const progressBar = document.getElementById('progress-bar');
-const newMedicinesContainer = document.getElementById('new-medicines'); // NEW ELEMENT
-const freeTrialBtn = document.getElementById('free-trial'); // ===== Free Trial Button =====
+const newMedicinesContainer = document.getElementById('new-medicines');
+const freeTrialBtn = document.getElementById('free-trial');
+const navLogo = document.getElementById("nav-logo"); // navbar logo
 
 // ===== Helpers =====
 function displayMessage(message, sender) {
@@ -300,7 +301,6 @@ medicineBtn.addEventListener('click', async () => {
     medicineResult.innerHTML = '<span class="text-gray-500">Searching...</span>';
 
     try {
-        // Use relative path to your Flask backend
         const res = await fetch(`/medicine_lookup?q=${encodeURIComponent(med)}`);
         const data = await res.json();
 
@@ -325,12 +325,60 @@ contactForm?.addEventListener("submit", (e) => {
     contactForm.reset();
 });
 
-// Paga payment integration (simplified)
-  function payWithPaga(itemName, amount) {
+// ===== Paga Payment =====
+function payWithPaga(itemName, amount) {
     alert("Redirecting to Paga payment for " + itemName + " (₦" + amount + ")");
-    // Example redirect - replace with real Paga Collect URL
     window.location.href = "https://mypaga.com/paga-webservices/rest/express-checkout?amount=" + amount + "&item=" + encodeURIComponent(itemName);
-  }
+}
+
+// ===== Dark/Light Mode =====
+const themeToggleBtn = document.createElement("button");
+themeToggleBtn.id = "theme-toggle";
+themeToggleBtn.textContent = "🌙"; // Default icon
+themeToggleBtn.style.position = "fixed";
+themeToggleBtn.style.bottom = "20px";
+themeToggleBtn.style.right = "20px";
+themeToggleBtn.style.padding = "10px 15px";
+themeToggleBtn.style.borderRadius = "50%";
+themeToggleBtn.style.border = "none";
+themeToggleBtn.style.cursor = "pointer";
+themeToggleBtn.style.fontSize = "18px";
+themeToggleBtn.style.zIndex = "9999";
+themeToggleBtn.style.backgroundColor = "#001f3f"; // navy
+themeToggleBtn.style.color = "#fff";
+document.body.appendChild(themeToggleBtn);
+
+// Load saved theme
+function loadTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        themeToggleBtn.textContent = "☀️";
+        themeToggleBtn.style.backgroundColor = "#001f3f";
+        if (navLogo) navLogo.src = "https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg";
+    } else {
+        document.body.classList.remove("dark-mode");
+        themeToggleBtn.textContent = "🌙";
+        themeToggleBtn.style.backgroundColor = "#001f3f";
+        if (navLogo) navLogo.src = "your-light-logo.png"; // replace with original
+    }
+}
+loadTheme();
+
+// Toggle theme
+themeToggleBtn.addEventListener("click", () => {
+    if (document.body.classList.contains("dark-mode")) {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("theme", "light");
+        themeToggleBtn.textContent = "🌙";
+        if (navLogo) navLogo.src = "your-light-logo.png"; // light
+    } else {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("theme", "dark");
+        themeToggleBtn.textContent = "☀️";
+        if (navLogo) navLogo.src = "https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg"; // dark logo
+    }
+});
 
 // ===== Bootstrap =====
 bootstrap();

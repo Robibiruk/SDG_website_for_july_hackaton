@@ -47,6 +47,12 @@ nav {
 
 #logo {
   height: 45px;
+  transition: 0.3s ease;
+}
+
+/* Dark mode logo */
+body.dark-mode #logo {
+  content: url('https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg');
 }
 
 .nav-links {
@@ -781,23 +787,42 @@ header .overlay {
             margin-bottom: 20px;
             font-style: italic;
             opacity: 0.8;
+
         }
+
+        .paga-form {
+    display: flex;
+    display: flex;               /* Make the form a flex container */
+    justify-content: center;     /* Center the button horizontally */
+    align-items: center;         /* Center vertically if needed */
+    margin-top: 20px;            /* Optional spacing */
+    width: 100%; 
+}
+
 
         .subscribe-btn {
-            background-color: transparent;
-            color: #f69dad;
-            padding: 12px 40px;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 50px;
-            border: black 2px;
-            transition: all 0.3s ease;
-        }
+            display: flex !important;   
+            justify-content: center !important;   /* Center the content */
+            align-items: center !important;       /* Center the content */
+            max-width: 220px !important;            /* Limit the width */
+            width: 100% !important;                 /* Fill available space up to max-width */
+            text-align: center !important;          /* Center the text/icon */
+            padding: 10px 20px !important;          /* Adjust button padding */
+            border-radius: 8px !important;          /* Rounded corners */
+    background-color: #0e8dad !important;   /* Button color */
+    color: #fff !important;                 /* Text color */
+    font-size: 16px !important;             /* Font size */
+    cursor: pointer !important;             /* Pointer on hover */
+    border: none;                /* Remove default border */
+}
+
+.subscribe-btn i {
+    margin-left: 8px !important;            /* Space between text and icon */
+}
 
         .subscribe-btn:hover {
-            background-color: #f69dad;
-            transform: translateY(-3px);
+            background-color: #f69dad !important;
+            transform: translateY(-3px) !important;
         }
 
         /* Follow Us Section */
@@ -1167,6 +1192,315 @@ header .overlay {
   margin-bottom: 15px;
 }
 
+/* ===== DARK MODE ===== */
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+/* Header, footer, sections */
+body.dark-mode header,
+body.dark-mode footer,
+body.dark-mode section,
+body.dark-mode main {
+  background-color: #1c1c1c;
+  color: #f1f1f1;
+}
+
+/* Navbar */
+body.dark-mode nav {
+  background: #1e1e1e;
+  border-bottom: 1px solid #333;
+}
+body.dark-mode .nav-links a {
+  color: #ddd;
+}
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
+  color: #00c9a7;
+}
+
+/* Forms & inputs */
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+  border: 1px solid #444;
+}
+body.dark-mode input:focus,
+body.dark-mode textarea:focus {
+  border-color: #00c9a7;
+  box-shadow: 0 0 8px rgba(0, 201, 167, 0.3);
+}
+
+/* Buttons */
+body.dark-mode button,
+body.dark-mode .primary-button,
+body.dark-mode .subscribe-btn,
+body.dark-mode .order-btn {
+  background: linear-gradient(135deg, #00c9a7, #007f6e);
+  color: #fff;
+  border: none;
+}
+body.dark-mode button:hover,
+body.dark-mode .order-btn:hover {
+  background: linear-gradient(135deg, #00e6c2, #009f86);
+}
+
+/* Cards / boxes */
+body.dark-mode .product-card,
+body.dark-mode .store-item-large-1,
+body.dark-mode .store-item-large-2,
+body.dark-mode .store-item-large-3,
+body.dark-mode #reminder-form,
+body.dark-mode #gamification,
+body.dark-mode #medicine-search,
+body.dark-mode #reminder-list {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border: 1px solid #333;
+}
+
+/* Chatbox & medicine results */
+body.dark-mode #chatbox,
+body.dark-mode #medicine-result {
+  background: #222 !important;
+  border: 1px solid #444;
+  color: #f1f1f1 !important;
+}
+
+/* Stats & Testimonials */
+body.dark-mode #stats-section,
+body.dark-mode #testimonials-section {
+  background-color: #1c1c1c;
+}
+body.dark-mode .testimonial-item {
+  background-color: #222;
+  color: #ddd;
+}
+
+/* AI Bot / Chatbox */
+body.dark-mode #chatbot,
+body.dark-mode #chatbox {
+  background-color: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border: 1px solid #333;
+}
+body.dark-mode #chatbox * {
+  color: #f1f1f1 !important;
+}
+
+/* Services Section */
+body.dark-mode #services-section,
+body.dark-mode .service-item {
+  background-color: #1c1c1c !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .service-item h3,
+body.dark-mode .service-item p {
+  color: #f1f1f1 !important;
+}
+
+/* Store Section */
+body.dark-mode #store-section {
+  background-color: #1c1c1c !important;
+  color: #f1f1f1 !important;
+}
+body.dark-mode .store-item,
+body.dark-mode .store-item-large-1,
+body.dark-mode .store-item-large-2,
+body.dark-mode .store-item-large-3 {
+  background-color: #222 !important;
+  border: 1px solid #333 !important;
+  color: #f1f1f1 !important;
+}
+
+/* Subscription Section */
+body.dark-mode #subscription-section {
+  background-color: #1c1c1c !important;
+  color: #f1f1f1 !important;
+  background-image: none !important; /* remove bg image in dark mode */
+}
+body.dark-mode #subscription-section input,
+body.dark-mode #subscription-section button {
+  background-color: #2b2b2b !important;
+  color: #f1f1f1 !important;
+  border: 1px solid #444 !important;
+}
+
+/* 🌙 Global Dark Mode */
+body.dark-mode {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Landing Section Dark Mode Overlay */
+body.dark-mode #landing-section {
+    position: relative; /* Needed for overlay positioning */
+    background: url("https://images.pexels.com/photos/3850674/pexels-photo-3850674.jpeg") center/cover no-repeat;
+    color: #f1f1f1;
+}
+
+/* Dark overlay */
+body.dark-mode #landing-section::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* top:0; left:0; right:0; bottom:0 */
+    background: rgba(0, 0, 0, 0.6); /* Adjust opacity for darkness */
+    z-index: 0;
+}
+
+/* Make all content appear above overlay */
+body.dark-mode #landing-section * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* 🌙 Landing Page - remove background image on mobile dark mode */
+@media (max-width: 768px) {
+  body.dark-mode #landing-section {
+    background: #121212 !important;
+
+
+  }
+
+  body.dark-mode #landing-section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent black */
+    pointer-events: none;
+}
+
+}
+
+/* 🌙 Chatbot Section */
+body.dark-mode #chatbot-section {
+  background: #1e1e1e !important;
+  color: #f0f0f0 !important;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+body.dark-mode #chatbox {
+  background: #262626 !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #333;
+}
+
+body.dark-mode #chat-input-container {
+  background: #1e1e1e;
+}
+
+body.dark-mode #chat-input {
+  background: #2c2c2c;
+  color: #f0f0f0;
+  border: 1px solid #444;
+}
+
+/* 🌙 Services + Store Section */
+body.dark-mode #store-section {
+  background: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+body.dark-mode #store-section h3,
+body.dark-mode #store-section p {
+  color: #f0f0f0 !important;
+}
+
+/* 🌙 Subscription Section with Overlay */
+body.dark-mode #subscription-section {
+  position: relative;
+  background: url("https://images.pexels.com/photos/159211/headache-pain-pills-medication-159211.jpeg") center/cover no-repeat;
+  color: #f0f0f0;
+}
+
+/* FOLLOW SECTION Dark Mode Fix */
+body.dark-mode #follow-section #left-section img {
+  opacity: 0.15; /* Dim the image instead of showing bright */
+  filter: grayscale(80%);
+}
+
+
+
+
+body.dark-mode #subscription-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65); /* overlay */
+  z-index: 0;
+}
+
+body.dark-mode #subscription-section * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 🌙 Contact + Address Section */
+body.dark-mode #contact,
+body.dark-mode #address-section {
+  background: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+body.dark-mode #contact a {
+  color: white !important;
+}
+
+/* 🌙 Dark Mode Toggle Button (bottom-right corner) */
+#dark-mode-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1a2238; /* Navy */
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  padding: 12px 16px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+#dark-mode-toggle:hover {
+  background-color: #0f1624; /* Darker Navy on hover */
+  transform: scale(1.05);
+}
+
+
+
+/* Fix Landing Page BG in Mobile */
+@media (max-width: 768px) {
+  /* Landing Section Dark Mode Overlay */
+body.dark-mode #landing-section {
+    position: relative; /* Needed for overlay positioning */
+    background: url("https://images.pexels.com/photos/3850674/pexels-photo-3850674.jpeg") center/cover no-repeat !important;
+    color: #f1f1f1;
+}
+
+/* Dark overlay */
+body.dark-mode #landing-section::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* top:0; left:0; right:0; bottom:0 */
+    background: rgba(0, 0, 0, 0.6); /* Adjust opacity for darkness */
+    z-index: 0;
+}
+
+/* Make all content appear above overlay */
+body.dark-mode #landing-section * {
+    position: relative;
+    z-index: 1;
+}
+
+}
+
         /* ================= RESPONSIVE STYLES ================= */
 
         /* Tablet and Small Desktop Styles */
@@ -1287,10 +1621,7 @@ header .overlay {
                 width: 100%;
             }
 
-            .chat-log {
-                font-size: 14px;
-                text-align: left;
-            }
+            
 
             .get-premium-btn {
                 padding: 12px 20px;
@@ -1306,6 +1637,7 @@ header .overlay {
     min-width: unset;   /* remove 700px lock */
     width: 100%;
     padding: 15px;
+    
   }
 
   /* Chatbot fix */
@@ -1316,7 +1648,12 @@ header .overlay {
   word-wrap: break-word;
   white-space: pre-wrap;  /* ✅ prevents text from going off-screen */
   box-sizing: border-box;
+  
 }
+
+#chatbot-section #chat-log {
+        text-align: left !important;
+    }
 
 
   /* Medicine Search */
