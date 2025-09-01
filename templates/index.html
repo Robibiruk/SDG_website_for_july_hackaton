@@ -18,25 +18,34 @@
 <body>
     <!-- HEADER -->
     <header>
-        <nav>
-            <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
-            <div>
-                <a href="#reminder-form" class="menu-item">Reminder</a>
-                <a href="#store-section" class="menu-item">Store</a>
-                <a href="#analytics" class="menu-item">Analytics</a>
-                <a href="#video-section" class="menu-item">Demo Video</a>
-                <a href="#address-section" class="menu-item">Contact</a>
-                <!-- ✅ Paga Payment Form (Subscription Button) -->
-            <form method="POST" action="https://mypaga.com/pay" target="_blank" style="display:inline;">
-                    <input type="hidden" name="amount" value="100"> <!-- NGN -->
-                    <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="merchantId" value="YOUR_MERCHANT_ID"> <!-- replace -->
-                    <input type="hidden" name="referenceNumber" value="txn_nav_12345">
-                    <input type="hidden" name="redirectUrl" value="https://yourwebsite.com/payment-success">
-                    <button type="submit" class="primary-button">Subscribe <i class="fa-solid fa-web-awesome"></i></button>
-                </form>
-            </div>
-        </nav>
+        <!-- Navigation -->
+<nav>
+  <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
+
+  <!-- Hamburger Menu -->
+  <div class="menu-toggle" id="menu-toggle">
+    <i class="fa fa-bars"></i>
+  </div>
+
+  <div class="nav-links" id="nav-links">
+    <a href="#home" class="menu-item">Home</a>
+    <a href="#reminder-form" class="menu-item">Reminder</a>
+    <a href="#store-section" class="menu-item">Store</a>
+    <a href="#analytics" class="menu-item">Analytics</a>
+    <a href="#video-section" class="menu-item">Demo Video</a>
+    <a href="#address-section" class="menu-item">Contact</a>
+
+    <!-- ✅ Paga Payment Form (Subscription Button) -->
+    <form method="POST" action="https://mypaga.com/pay" target="_blank" style="display:inline;">
+      <input type="hidden" name="amount" value="100">
+      <input type="hidden" name="currency" value="NGN">
+      <input type="hidden" name="merchantId" value="YOUR_MERCHANT_ID">
+      <input type="hidden" name="referenceNumber" value="txn_nav_12345">
+      <input type="hidden" name="redirectUrl" value="https://yourwebsite.com/payment-success">
+      <button type="submit" class="primary-button">Subscribe <i class="fa-solid fa-crown"></i></button>
+    </form>
+  </div>
+</nav>
         <section id="landing-section">
             <div id="main-text-wrapper">
                 <h1>Robel's Community Pharmacy Reminder System</h1>

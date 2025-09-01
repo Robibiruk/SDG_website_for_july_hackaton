@@ -1,3 +1,8 @@
+html {
+  scroll-behavior: smooth;
+}
+
+
 /* Global Styles */
         body {
             font-family: 'Poppins', sans-serif;
@@ -21,23 +26,68 @@
             background-size: cover;
         }
 
-        nav {
-            background-color: white;
-            width: 100%;
-            height: 77px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 28px;
-            box-sizing: border-box;
-            position: fixed;
-            z-index: 10;
-        }
+        section {
+  scroll-margin-top: 80px; /* equal to navbar height */
+}
 
-        #logo {
-            width: 60px;
-        }
 
+        /* Nav Styling */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 1px solid #eee;
+}
+
+#logo {
+  height: 45px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #00c9a7;
+}
+
+/* Subscribe button */
+.primary-button {
+  background: #00c9a7;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary-button:hover {
+  background: #009f86;
+}
+
+/* Mobile Menu */
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  font-size: 24px;
+}
         .menu-item {
             color: black;
             font-weight: 600;
@@ -50,19 +100,7 @@
             padding-left: 4px;
         }
 
-        .primary-button,
-        .chat-subscribe-cta .primary-button {
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-            background-color: rgb(170, 210, 54);
-            padding: 9px 34px;
-            text-transform: uppercase;
-            border: 0;
-            border-radius: 4px;
-            margin-right: 16px;
-            cursor: pointer;
-        }
+        
 
         main {
             max-width: 1200px; /* Increased from 800px to accommodate side-by-side layout */
@@ -84,7 +122,7 @@
 
         #landing-section::before {
             content: "";
-            position: absolute;
+            position: relative;
             top: 0;
             left: 0;
             width: 100%;
@@ -92,6 +130,24 @@
             background-color: rgba(0, 0, 0, 0.4);
             z-index: 1;
         }
+
+        #landing-section, header {
+  position: relative;
+  height: 100vh;       /* full screen height */
+  overflow: hidden;    /* keep overlay from bleeding out */
+}
+
+/* Overlay fix */
+#landing-section .overlay, 
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;        /* match parent, not page */
+  max-height: 100vh;   /* stops overflow on mobile */
+  pointer-events: none; /* overlay doesn't block buttons */
+}
 
         #main-text-wrapper {
             position: relative;
@@ -625,6 +681,42 @@
     background-size: cover;
   }
 
+  .store-item-large-1,
+.store-item-large-2,
+.store-item-large-3 {
+  position: relative;       /* needed for overlay */
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 20px 0;
+  background-size: cover;
+  background-position: center;
+  color: #fff;              /* text visible on dark overlay */
+  overflow: hidden;         /* clip overlay to box radius */
+}
+
+/* Add overlay */
+.store-item-large-1::before,
+.store-item-large-2::before,
+.store-item-large-3::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.55);  /* dark overlay */
+  border-radius: 15px;
+  z-index: 0;
+}
+
+/* Make sure text + icons are above overlay */
+.store-item-large-1 *,
+.store-item-large-2 *,
+.store-item-large-3 * {
+  position: relative;
+  z-index: 1;
+  color: #fff !important; /* force text & icons visible */
+}
+
+
   .icon-wrapper {
     margin-bottom: 15px;
   }
@@ -1149,6 +1241,7 @@
                 height: auto;
                 padding: 15px;
                 position: relative;
+                width: 100% !important;
             }
 
             .menu-item {
@@ -1194,6 +1287,11 @@
                 width: 100%;
             }
 
+            .chat-log {
+                font-size: 14px;
+                text-align: left;
+            }
+
             .get-premium-btn {
                 padding: 12px 20px;
             }
@@ -1203,15 +1301,45 @@
                 margin-left: 8px;
             }
 
-            #chatbot-section {
-                padding: 20px;
-                margin: 20px;
-                box-shadow: none;
-            }
+            /* Chatbot Section */
+  #chatbot-section {
+    min-width: unset;   /* remove 700px lock */
+    width: 100%;
+    padding: 15px;
+  }
 
-            #chatbox {
-                max-height: 300px;
-            }
+  /* Chatbot fix */
+#chatbox {
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;   /* scroll inside, not outside */
+  word-wrap: break-word;
+  white-space: pre-wrap;  /* ✅ prevents text from going off-screen */
+  box-sizing: border-box;
+}
+
+
+  /* Medicine Search */
+  #medicine-input {
+    width: 100%;        /* full width on mobile */
+    max-width: 100%;
+  }
+
+  #medicine-search {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  #medicine-result {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Forms & buttons inside medicine section */
+  #medicine-btn {
+    width: 100%;
+    max-width: 250px;   /* keep button decent size */
+  }
 
             #chat-input {
                 padding: 12px;
@@ -1334,6 +1462,22 @@
   margin-bottom: 15px;
 }
 
+  .reminder-popup {
+  position: fixed;       
+  bottom: 10px;
+  left: 5%;
+  right: 5%;
+  width: 90%;            
+  font-size: 13px;
+  padding: 10px 12px;
+  flex-direction: column; 
+  gap: 10px;
+
+  max-height: calc(100vh - 20px); /* never taller than screen */
+  overflow: hidden;              /* cut off any extra */
+  box-sizing: border-box;
+}
+
 
 
         /* Very Small Mobile Styles */
@@ -1424,9 +1568,10 @@
 /* Mobile */
 @media (max-width: 600px) {
   nav {
-    flex-direction: column;
+    flex-direction: row !important;
     gap: 10px;
     align-items: center;
+    width: 100%;
   }
 
   #main-text-wrapper h1 {
@@ -1447,3 +1592,42 @@
     height: auto;
   }
 }
+        }
+
+/* Global Mobile Section Fix */
+@media (max-width: 768px) {
+  section, header, footer, main,
+  #store-section, #service-section, 
+  #subscription-section, #stats-section,
+  #testimonials-section, #video-section,
+  #address-section, #follow-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+  }
+
+  /* Full height hero section */
+  #landing-section, header {
+    height: 100dvh;  /* ✅ modern viewport unit, fixes mobile issues */
+  }
+  #landing-section .overlay, 
+  header .overlay {
+    height: 100dvh;
+  }
+
+  /* Store cards & testimonials stack */
+  .product-grid, #testimonials-wrapper, #stats-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .product-card, .testimonial-item, .stats-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+        
