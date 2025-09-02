@@ -107,8 +107,8 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form["email"]
+        password = request.form["password"]
 
         db_path = os.path.join(os.path.dirname(__file__), "users.db")
         conn = sqlite3.connect(db_path)
@@ -118,20 +118,31 @@ def login():
         conn.close()
 
         if user:
-            session['user'] = {"id": user[0], "first": user[1], "last": user[2], "email": user[3]}
-            flash("Login successful!", "success")
-            return redirect(url_for('index'))
+            session["user"] = {
+                "id": user[0],
+                "first": user[1],
+                "last": user[2],
+                "email": user[3],
+            }
+            flash("✅ Login successful!", "success")
+            return redirect(url_for("index"))
         else:
-            flash("Invalid email or password", "error")
-            return redirect(url_for('login'))
+            flash("❌ Invalid email or password", "error")
+            return redirect(url_for("login"))
 
     return render_template("login.html")
 
 @app.route("/logout")
 def logout():
-    session.pop("user", None)
-    flash("Logged out", "success")
+    # Clear session (removes user info)
+    session.clear()
+
+    # Flash message
+    flash("You have been logged out.", "info")
+
+    # Redirect to home (or login)
     return redirect(url_for("index"))
+
 
 # ================= AI Proxy =================
 @app.route("/ai")
