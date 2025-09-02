@@ -50,11 +50,6 @@ nav {
   transition: 0.3s ease;
 }
 
-/* Dark mode logo */
-body.dark-mode #logo {
-  content: url('https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg');
-}
-
 .nav-links {
   display: flex;
   align-items: center;

@@ -355,7 +355,7 @@ function loadTheme() {
         document.body.classList.add("dark-mode");
         themeToggleBtn.textContent = "☀️";
         themeToggleBtn.style.backgroundColor = "#001f3f";
-        if (navLogo) navLogo.src = "https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg";
+        if (navLogo) navLogo.src = "{{ url_for('static', filename='favicon.png') }}";
     } else {
         document.body.classList.remove("dark-mode");
         themeToggleBtn.textContent = "🌙";
@@ -376,7 +376,7 @@ themeToggleBtn.addEventListener("click", () => {
         document.body.classList.add("dark-mode");
         localStorage.setItem("theme", "dark");
         themeToggleBtn.textContent = "☀️";
-        if (navLogo) navLogo.src = "https://thumbs.dreamstime.com/b/medicine-icon-black-background-black-flat-style-vector-illustration-medicine-icon-black-background-black-flat-style-vector-168422030.jpg"; // dark logo
+        if (navLogo) navLogo.src = "{{ url_for('static', filename='favicon.png') }}"; // dark logo
     }
 });
 

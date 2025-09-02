@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Community Pharmacy Reminder</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
 
     <!-- Fonts & Icons -->
      <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +21,7 @@
     <header>
         <!-- Navigation -->
 <nav>
-  <img id="logo" src="https://img.freepik.com/free-vector/medicine-capsule-icon_24911-115957.jpg" alt="logo" />
+  <img id="logo" src="{{ url_for('static', filename='favicon.png') }}" alt="logo" />
 
   <!-- Menu -->
   <div class="menu-toggle" id="menu-toggle">
