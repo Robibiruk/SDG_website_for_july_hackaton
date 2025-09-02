@@ -185,32 +185,40 @@
       <h2>Create an Account</h2>
       <p class="subtitle">Join us and make your life easier</p>
 
-      <form id="registerForm" novalidate>
-        <div class="name-fields">
-          <input type="text" id="firstName" placeholder="First Name" required />
-          <input type="text" id="lastName" placeholder="Last Name" required />
-        </div>
+      <form id="registerForm" method="POST" action="{{ url_for('register') }}">
+  <div class="name-fields">
+    <input type="text" id="firstName" name="firstName" placeholder="First Name" required />
+    <input type="text" id="lastName" name="lastName" placeholder="Last Name" required />
+  </div>
 
-        <input type="email" id="email" placeholder="Email Address" required />
+  <input type="email" id="email" name="email" placeholder="Email Address" required />
 
-        <div class="password-field">
-          <input type="password" id="password" placeholder="Password"
-                 required pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}" />
-          <i class="fa fa-eye" id="togglePassword" title="Show / hide password"></i>
-        </div>
+  <div class="password-field">
+    <input type="password" id="password" name="password" placeholder="Password" required />
+    <i class="fa fa-eye" id="togglePassword"></i>
+  </div>
 
-        <div class="password-field">
-          <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-          <i class="fa fa-eye" id="toggleConfirmPassword" title="Show / hide password"></i>
-        </div>
+  <div class="password-field">
+    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+    <i class="fa fa-eye" id="toggleConfirmPassword"></i>
+  </div>
 
-        <button type="submit" class="btn">Register</button>
-      </form>
+  <button type="submit" class="btn">Register</button>
+</form>
+
 
       <p class="signup-link">Already have an account? 
   <a href="{{ url_for('login') }}">Login here</a>
 </p>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul style="margin-top:15px;">
+          {% for category, message in messages %}
+            <li style="color: {{ 'red' if category=='error' else 'green' }}">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
 
     </div>
 
@@ -235,57 +243,23 @@
   </div>
 
   <script>
-    // Defensive toggles (no errors if icons missing)
-    (function () {
-      const toggle = document.getElementById("togglePassword");
-      const pwd = document.getElementById("password");
-      if (toggle && pwd) {
-        toggle.addEventListener("click", () => {
-          const type = pwd.getAttribute("type") === "password" ? "text" : "password";
-          pwd.setAttribute("type", type);
-          toggle.classList.toggle("fa-eye-slash");
-        });
-      }
+    // Toggle password visibility
+   const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+togglePassword?.addEventListener("click", () => {
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.classList.toggle("fa-eye-slash");
+});
 
-      const toggle2 = document.getElementById("toggleConfirmPassword");
-      const pwd2 = document.getElementById("confirmPassword");
-      if (toggle2 && pwd2) {
-        toggle2.addEventListener("click", () => {
-          const type = pwd2.getAttribute("type") === "password" ? "text" : "password";
-          pwd2.setAttribute("type", type);
-          toggle2.classList.toggle("fa-eye-slash");
-        });
-      }
-    })();
+const toggleConfirm = document.getElementById("toggleConfirmPassword");
+const confirmInput = document.getElementById("confirmPassword");
+toggleConfirm?.addEventListener("click", () => {
+    confirmInput.type = confirmInput.type === "password" ? "text" : "password";
+    toggleConfirm.classList.toggle("fa-eye-slash");
+});
 
-    // Handle register
-    document.getElementById("registerForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const firstName = document.getElementById("firstName").value.trim();
-      const lastName = document.getElementById("lastName").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (!firstName || !lastName || !email || !password || !confirmPassword) {
-        alert("Please fill all fields.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
-
-      // Save user (this uses localStorage like your other pages)
-      const user = { firstName, lastName, email, password };
-      localStorage.setItem("user", JSON.stringify(user));
-
-      alert("Registration successful! Please login.");
-      // redirect to login page (keep your server-side url_for if you're using Flask)
-      window.location.href = "login.html";
-    });
+    
   </script>
+
 </body>
 </html>

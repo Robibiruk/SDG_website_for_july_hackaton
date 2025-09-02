@@ -1,16 +1,16 @@
 import os
 import json
-from flask import Flask, render_template, jsonify, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 import requests
-import sqlite3  # Local database
-from firebase_admin import credentials, initialize_app
+import sqlite3
+import firebase_admin
+from firebase_admin import credentials, auth, firestore
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersecretkey")
 
-# ---- App ID ----
 APP_ID = os.getenv("APP_ID", "meditrack")
 
-# ---- Firebase Config ----
 FIREBASE_CONFIG = {
     "apiKey": os.getenv("FIREBASE_API_KEY", "AIzaSyAO8ScbDEtVlhzlyyw-FNQJSDcufFeM4Lc"),
     "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN", "meditrack-2bff4.firebaseapp.com"),
@@ -21,52 +21,121 @@ FIREBASE_CONFIG = {
     "measurementId": os.getenv("FIREBASE_MEASUREMENT_ID", "G-JVP5PM8J4N"),
 }
 
-# ---- Firebase Admin ----
+# ================= Firebase Admin =================
 firebase_key_json = os.getenv("FIREBASE_KEY_JSON")
 if firebase_key_json:
     try:
         firebase_creds = json.loads(firebase_key_json)
         cred = credentials.Certificate(firebase_creds)
         initialize_app(cred)
+        print("✅ Firebase Admin initialized successfully.")
     except Exception as e:
         print(f"⚠️ Firebase Admin init failed: {e}")
 else:
     print("⚠️ No FIREBASE_KEY_JSON found. Admin SDK not initialized.")
 
-# ---- Gemini API ----
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-user_message_count = {}
-MAX_MESSAGES = 5
-
-# ---- Paga Collect Config ----
-PAGA_PRINCIPAL = os.getenv("PAGA_PRINCIPAL", "")
-PAGA_CREDENTIALS = os.getenv("PAGA_CREDENTIALS", "")
-PAGA_SECRET = os.getenv("PAGA_SECRET", "")
-PAGA_BASE_URL = "https://beta.mypaga.com/paga-webservices/oauth2"
-
-# ========== login.html ========== #
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/register")
-def register():
-    return render_template("register.html")
-
-# ================= ROUTES ================= #
-
+# ================= Routes =================
 @app.route("/")
 def index():
-    return render_template("index.html")
+    user = session.get("user")
+    return render_template("index.html", user=user)
 
 @app.route("/config")
 def config():
-    """Frontend fetches this to init Firebase without inline JS."""
-    return jsonify({"app_id": APP_ID, "firebase_config": FIREBASE_CONFIG})
+    """Provide Firebase config to JS for frontend SDK"""
+    return jsonify({
+        "firebase_config": FIREBASE_CONFIG,
+        "app_id": APP_ID
+    })
 
+# ================= Firebase Admin Setup =================
+FIREBASE_KEY_PATH = os.environ.get("FIREBASE_KEY_PATH", "firebase_key.json")
+if os.path.exists(FIREBASE_KEY_PATH):
+    cred = credentials.Certificate(FIREBASE_KEY_PATH)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    print("✅ Firebase Admin initialized successfully.")
+else:
+    db = None
+    print("⚠️ Firebase key not found. Firebase Admin not initialized.")
+
+# ================= Gemini API =================
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+user_message_count = {}
+MAX_MESSAGES = 5
+
+# ================= Paga Collect =================
+PAGA_PRINCIPAL = os.environ.get("PAGA_PRINCIPAL", "")
+PAGA_CREDENTIALS = os.environ.get("PAGA_CREDENTIALS", "")
+PAGA_SECRET = os.environ.get("PAGA_SECRET", "")
+PAGA_BASE_URL = "https://beta.mypaga.com/paga-webservices/oauth2"
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        first = request.form['firstName']
+        last = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        confirm = request.form['confirmPassword']
+
+        if password != confirm:
+            flash("Passwords do not match", "error")
+            return redirect(url_for('register'))
+
+        db_path = os.path.join(os.path.dirname(__file__), "users.db")
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.execute("""CREATE TABLE IF NOT EXISTS users (
+                      id INTEGER PRIMARY KEY, 
+                      first TEXT, last TEXT, email TEXT UNIQUE, password TEXT)""")
+        try:
+            c.execute("INSERT INTO users (first, last, email, password) VALUES (?, ?, ?, ?)",
+                      (first, last, email, password))
+            conn.commit()
+            flash("Registration successful!", "success")
+        except sqlite3.IntegrityError:
+            flash("Email already exists", "error")
+            conn.close()
+            return redirect(url_for('register'))
+
+        conn.close()
+        return redirect(url_for('login'))
+
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+
+        db_path = os.path.join(os.path.dirname(__file__), "users.db")
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
+        user = c.fetchone()
+        conn.close()
+
+        if user:
+            session['user'] = {"id": user[0], "first": user[1], "last": user[2], "email": user[3]}
+            flash("Login successful!", "success")
+            return redirect(url_for('index'))
+        else:
+            flash("Invalid email or password", "error")
+            return redirect(url_for('login'))
+
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    flash("Logged out", "success")
+    return redirect(url_for("index"))
+
+# ================= AI Proxy =================
 @app.route("/ai")
 def ai_proxy():
-    """AI proxy to Gemini API."""
     prompt = request.args.get("prompt", "")
     user_ip = request.remote_addr
     count = user_message_count.get(user_ip, 0)
@@ -91,7 +160,7 @@ def ai_proxy():
     except Exception as e:
         return jsonify({"response": f"Error contacting Gemini: {e}"}), 502
 
-# ===== Medicine Lookup =====
+# ================= Medicine Lookup =================
 @app.route("/medicine_lookup")
 def medicine_lookup():
     query = request.args.get("q", "").strip().lower()
@@ -121,12 +190,11 @@ def medicine_lookup():
         print(f"Error accessing local database: {e}")
         return jsonify({"error": "Database error"}), 500
 
-# ====== Paga Collect Integration ======
+# ================= Paga Collect =================
 @app.route("/pay", methods=["POST"])
 def paga_pay():
-    """Initialize payment via Paga Collect API."""
     try:
-        amount = request.json.get("amount", "100")  # Default amount
+        amount = request.json.get("amount", "100")
         currency = "NGN"
 
         payload = {
@@ -138,10 +206,7 @@ def paga_pay():
             "callBackUrl": request.host_url + "pay/callback"
         }
 
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
         # Get OAuth Token
         token_url = f"{PAGA_BASE_URL}/token"
@@ -158,14 +223,13 @@ def paga_pay():
             **headers,
             "Authorization": f"Bearer {access_token}"
         }, json=payload)
-
         resp.raise_for_status()
         return jsonify(resp.json())
 
     except Exception as e:
         return jsonify({"error": f"Paga Collect failed: {e}"}), 500
 
-# ===== MAIN =====
+# ================= Main =================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

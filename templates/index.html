@@ -38,12 +38,31 @@
 
     <!-- Auth (will switch based on login state) -->
     <div class="auth-container" id="auth-container">
-      <a href="{{ url_for('register') }}" id="auth-link" class="primary-button">
-        Register <i class="fa-solid fa-user-plus"></i>
-      </a>
+      {% if user %}
+  <span>Welcome, {{ user.first }}!</span>
+  <a href="{{ url_for('logout') }}">Logout</a>
+{% else %}
+  <a href="{{ url_for('register') }}">Register</a>
+  <a href="{{ url_for('login') }}">Login</a>
+{% endif %}
     </div>
   </div>
 </nav>
+<div id="flashPopup" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0f1114;
+    border: 2px solid #5ec2f7;
+    padding: 25px 35px;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 600;
+    display: none;
+    z-index: 9999;
+    text-align: center;
+"></div>
 
 <section id="landing-section">
   <div id="main-text-wrapper">
@@ -343,69 +362,28 @@
     <!-- JS (external only; no inline) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{{ url_for('static', filename='app.js') }}"></script>
-    <script>
-  document.addEventListener("DOMContentLoaded", function(){
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const authLink = document.getElementById("auth-link");
-
-    if(loggedInUser){
-      authLink.innerHTML = `<i class="fa-solid fa-user"></i> ${loggedInUser.firstName}`;
-      authLink.href = "#"; // profile page (if you make one)
-    }
-  });
-</script>
 <script>
-  document.addEventListener("DOMContentLoaded", function(){
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const authLink = document.getElementById("auth-link");
+  const authContainer = document.getElementById("auth-container");
 
-    if(loggedInUser){
-      authLink.innerHTML = `<i class="fa-solid fa-user"></i> ${loggedInUser.firstName}`;
-      authLink.href = "#"; // later can go to profile page
-    }
+if (loggedInUser) {
+  authContainer.innerHTML = `
+    <div class="user-dropdown" id="user-dropdown">
+      <div class="user-button">
+        <i class="fa-solid fa-user"></i> ${loggedInUser.firstName}
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("logout-btn").addEventListener("click", function (e) {
+    e.preventDefault();
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "/";
   });
-</script>
+}
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const authContainer = document.getElementById("auth-container");
-
-    if (loggedInUser) {
-      // Replace register with user dropdown
-      authContainer.innerHTML = `
-        <div class="user-dropdown" id="user-dropdown">
-          <div class="user-button">
-            <i class="fa-solid fa-user"></i> ${loggedInUser.firstName}
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu">
-            <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-          </div>
-        </div>
-      `;
-
-      const userDropdown = document.getElementById("user-dropdown");
-      const dropdownMenu = document.getElementById("dropdown-menu");
-
-      // Toggle dropdown on click
-      userDropdown.addEventListener("click", function (e) {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle("show");
-      });
-
-      // Close dropdown if clicked outside
-      document.addEventListener("click", function () {
-        dropdownMenu.classList.remove("show");
-      });
-
-      // Logout action
-      document.getElementById("logout-btn").addEventListener("click", function (e) {
-        e.preventDefault();
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "{{ url_for('index') }}"; // redirect to main page
-      });
-    }
-  });
 </script>
 
 </body>

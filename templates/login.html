@@ -194,23 +194,24 @@
       <h2>Welcome Back</h2>
       <p class="subtitle">Sign in to access your Health Journey</p>
 
-      <form id="loginForm">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="Enter your email" required>
+      <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+  <label>Email Address</label>
+  <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-        <label>Password</label>
-        <div class="password-field">
-          <input type="password" id="password" placeholder="Password" required>
-          <i class="fa fa-eye" id="togglePassword"></i>
-        </div>
+  <label>Password</label>
+  <div class="password-field">
+    <input type="password" id="password" name="password" placeholder="Password" required>
+    <i class="fa fa-eye" id="togglePassword"></i>
+  </div>
 
-        <div class="options">
-          <label><input type="checkbox" id="rememberMe"> Remember me</label>
-          <a href="#">Forgot password?</a>
-        </div>
+  <div class="options">
+    <label><input type="checkbox" id="rememberMe" name="remember"> Remember me</label>
+    <a href="#">Forgot password?</a>
+  </div>
 
-        <button type="submit" class="btn">Login</button>
-      </form>
+  <button type="submit" class="btn">Login</button>
+</form>
+
 
       <p class="signup-link">Don't have an account? 
   <a href="{{ url_for('register') }}">Register here</a>
@@ -227,6 +228,15 @@
       Stay on track with your medications, access trusted drug information, 
       and get AI-powered health consultation—all in one simple platform.
     </p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul style="margin-top:15px;">
+          {% for category, message in messages %}
+            <li style="color: {{ 'red' if category=='error' else 'green' }}">{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
     <ul>
       <li><i class="fa fa-check-circle"></i> Smart medicine reminders tailored to your schedule</li>
       <li><i class="fa fa-check-circle"></i> Search and learn about 200+ essential drugs</li>
@@ -237,31 +247,21 @@
 
 
   <script>
-    // Toggle password visibility
     const togglePassword = document.getElementById("togglePassword");
-    const password = document.getElementById("password");
-    togglePassword.addEventListener("click", function () {
-      const type = password.getAttribute("type") === "password" ? "text" : "password";
-      password.setAttribute("type", type);
-      this.classList.toggle("fa-eye-slash");
-    });
+const passwordInput = document.getElementById("password");
+togglePassword?.addEventListener("click", () => {
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.classList.toggle("fa-eye-slash");
+});
 
-    // Handle login
-    document.getElementById("loginForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const user = JSON.parse(localStorage.getItem("user"));
+const toggleConfirm = document.getElementById("toggleConfirmPassword");
+const confirmInput = document.getElementById("confirmPassword");
+toggleConfirm?.addEventListener("click", () => {
+    confirmInput.type = confirmInput.type === "password" ? "text" : "password";
+    toggleConfirm.classList.toggle("fa-eye-slash");
+});
 
-      if(user && user.email === email && user.password === password){
-        localStorage.setItem("loggedInUser", JSON.stringify(user));
-        alert("Login successful!");
-        window.location.href = "{{ url_for('index') }}";
-
-      } else {
-        alert("Invalid email or password.");
-      }
-    });
   </script>
+
 </body>
 </html>
