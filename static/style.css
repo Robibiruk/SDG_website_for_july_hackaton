@@ -88,6 +88,95 @@ body.dark-mode #logo {
   background: #009f86;
 }
 
+/* User button (light mode) */
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #2c786c;
+  color: #fff;
+  border: none;
+  font-weight: 500;
+}
+
+.user-button:hover {
+  background: #245d52; /* darker shade for hover */
+}
+
+/* Arrow inside stays white */
+.user-arrow {
+  color: #fff;
+  transition: transform 0.25s ease;
+}
+.user-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu (light mode) */
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  background: #fff;
+  min-width: 150px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  border-radius: 6px;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 14px;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  background: #f4f4f4;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* 🌙 Dark Mode overrides */
+body.dark-mode .user-button {
+  background: #1e3c35;
+  color: #e0e0e0;
+}
+
+body.dark-mode .user-button:hover {
+  background: #162e28;
+}
+
+body.dark-mode .user-arrow {
+  color: #e0e0e0;
+}
+
+body.dark-mode .dropdown-menu {
+  background: #2a2a2a;
+}
+
+body.dark-mode .dropdown-menu a {
+  color: #e0e0e0;
+}
+
+body.dark-mode .dropdown-menu a:hover {
+  background: #3a3a3a;
+}
+
+/* Prevent scrollbar overlap */
+.nav-links {
+  padding-right: 20px; /* gives breathing room from scrollbar */
+}
+
 /* Mobile Menu */
 .menu-toggle {
   display: none;
@@ -1962,8 +2051,8 @@ body.dark-mode #landing-section * {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 auto !important;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 0;
+    padding-right: 0;
     box-sizing: border-box;
   }
 

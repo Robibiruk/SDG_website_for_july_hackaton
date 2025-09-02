@@ -44,6 +44,15 @@ PAGA_CREDENTIALS = os.getenv("PAGA_CREDENTIALS", "")
 PAGA_SECRET = os.getenv("PAGA_SECRET", "")
 PAGA_BASE_URL = "https://beta.mypaga.com/paga-webservices/oauth2"
 
+# ========== login.html ========== #
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+@app.route("/register")
+def register():
+    return render_template("register.html")
+
 # ================= ROUTES ================= #
 
 @app.route("/")

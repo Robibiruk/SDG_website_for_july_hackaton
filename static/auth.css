@@ -1,0 +1,265 @@
+
+    /* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #111;
+  color: #fff;
+}
+
+/* Container split */
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Left: Login Section */
+.login-section {
+  flex: 1;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #bbb;
+  margin-bottom: 30px;
+}
+
+form label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+form input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 20px;
+  background: #1c1c1c;
+  color: #fff;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 40px;
+}
+
+.password-field i {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  cursor: pointer;
+  color: #bbb;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.options a {
+  color: #3a82f7;
+  text-decoration: none;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #3a82f7, #5ec2f7);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.signup-link {
+  text-align: center;
+  font-size: 14px;
+}
+
+.signup-link a {
+  color: #3a82f7;
+  text-decoration: none;
+}
+
+/* Right: Info Section */
+.info-section {
+  flex: 1;
+  background: url('https://images.unsplash.com/photo-1573497491208-6b1acb260507?fit=crop&w=1200&q=80') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.info-content {
+  background: rgba(0,0,0,0.6);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 500px;
+  text-align: left;
+}
+
+.info-content .icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #5ec2f7;
+}
+
+.info-content h2 {
+  margin-bottom: 15px;
+}
+
+.info-content p {
+  margin-bottom: 20px;
+  color: #ddd;
+}
+
+.info-content ul {
+  list-style: none;
+}
+
+.info-content li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.info-content li i {
+  color: #5ec2f7;
+  margin-right: 10px;
+}
+.name-fields {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.name-fields input {
+  flex: 1;
+}
+
+
+/* 📱 Responsive Media Queries   */
+
+
+/* Tablets (<= 992px) */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .login-section, 
+  .info-section {
+    flex: none;
+    width: 100%;
+    height: auto;
+  }
+
+  .login-section {
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .info-section {
+    padding: 20px;
+    background-position: center;
+  }
+
+  .info-content {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .info-content ul {
+    text-align: left;
+    display: inline-block;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile (<= 576px) */
+@media (max-width: 576px) {
+  body {
+    padding: 0;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .login-section {
+    padding: 20px 15px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  form input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .name-fields {
+    flex-direction: column;
+  }
+
+  .name-fields input {
+    width: 100%;
+  }
+
+  .info-section {
+    display: none; /* ❌ hide right panel on small phones */
+  }
+}
