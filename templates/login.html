@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.png') }}">
   <style>
     /* Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -211,7 +212,10 @@
         <button type="submit" class="btn">Login</button>
       </form>
 
-      <p class="signup-link">Don't have an account? <a href="register.html">Register here</a></p>
+      <p class="signup-link">Don't have an account? 
+  <a href="{{ url_for('register') }}">Register here</a>
+</p>
+
     </div>
 
     <!-- Right: Info Section -->
