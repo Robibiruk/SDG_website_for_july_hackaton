@@ -1,6 +1,6 @@
 # 💊 Community Pharmacy Reminder
 
-![Preview Banner](https://files.fm/u/qm4pjm3eha)
+![Preview Banner](https://i.postimg.cc/LXj4Zsc9/Screenshot-20250907-035149-Chrome.jpg)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-blue)](https://community-pharmacy-reminder.onrender.com/)  
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen)  
