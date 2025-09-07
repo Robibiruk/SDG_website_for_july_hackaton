@@ -45,9 +45,9 @@ The platform provides a medication reminder system, AI-powered consultation, and
 ## 📦 Installation & Setup (Local)
 
 1. Clone the repository  
-   ``bash
-   git clone https://github.com/your-username/community-pharmacy-reminder.git
-   cd community-pharmacy-reminder
+   ```bash
+   git clone https://github.com/Robibiruk/SDG_website_for_july_hackaton.git
+   cd SDG_website_for_july_hackaton
 
 
 2. Install dependencies
