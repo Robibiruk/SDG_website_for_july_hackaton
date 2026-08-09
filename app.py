@@ -12,7 +12,7 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "supersecretkey")
 APP_ID = os.getenv("APP_ID", "meditrack")
 
 FIREBASE_CONFIG = {
-    "apiKey": os.getenv("FIREBASE_API_KEY", "AIzaSyAO8ScbDEtVlhzlyyw-FNQJSDcufFeM4Lc"),
+    "apiKey": os.getenv("FIREBASE_API_KEY", ""),
     "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN", "meditrack-2bff4.firebaseapp.com"),
     "projectId": os.getenv("FIREBASE_PROJECT_ID", "meditrack-2bff4"),
     "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET", "meditrack-2bff4.appspot.com"),
